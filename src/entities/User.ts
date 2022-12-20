@@ -16,6 +16,22 @@ export class User {
   @Column()
   @Field()
   password: string;
+
+  @Column()
+  @Field()
+  firstname: string;
+
+  @Column()
+  @Field()
+  lastname: string;
+
+  @Column()
+  @Field()
+  deliveryAdress: string;
+
+  @Column()
+  @Field()
+  createdDate: Date;
 }
 
 @InputType()

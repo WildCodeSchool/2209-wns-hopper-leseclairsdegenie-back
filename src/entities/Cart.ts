@@ -1,8 +1,13 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Reservation } from "./Reservation";
-import { User } from "./User";
-
+import { User, UserReservation } from "./User";
 
 @Entity()
 @ObjectType()
@@ -11,9 +16,9 @@ export class Cart {
   @Field(() => ID)
   id: number;
 
-  @ManyToOne( () => User,'carts', {onDelete: "CASCADE"})
-  @Field(() => User, {nullable: false})
-  user: User;
+  @ManyToOne(() => User, "carts", { onDelete: "CASCADE" })
+  @Field(() => User, { nullable: false })
+  user: UserReservation;
 
   @Column()
   @Field()
@@ -26,7 +31,7 @@ export class Cart {
   @Column()
   @Field()
   deliveryName: string;
-  
+
   @Column()
   @Field()
   deliveryAdress: string;
@@ -48,6 +53,6 @@ export class Cart {
   createdDate: Date;
 
   @Field(() => [Reservation])
-  @OneToMany(() => Reservation, 'reservations')
+  @OneToMany(() => Reservation, "reservations")
   reservations: Reservation[];
 }

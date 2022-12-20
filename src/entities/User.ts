@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { IsEmail, Length } from "class-validator";
+import { isDate, IsEmail, isString, Length } from "class-validator";
 
 @Entity()
 @ObjectType()
@@ -17,20 +17,20 @@ export class User {
   @Field()
   password: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   firstname: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   lastname: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deliveryAdress: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   createdDate: Date;
 }
 
@@ -43,4 +43,16 @@ export class UserInput {
   @Field()
   @Length(8, 60)
   password: string;
+
+  @Field()
+  firstname: string;
+
+  @Field()
+  lastname: string;
+
+  @Field()
+  deliveryAdress: string;
+
+  @Field()
+  createdDate: Date;
 }

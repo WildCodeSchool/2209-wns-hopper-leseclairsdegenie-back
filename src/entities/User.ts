@@ -56,3 +56,21 @@ export class UserInput {
   @Field()
   createdDate: Date;
 }
+
+@InputType()
+export class UserReservation {
+  @Field()
+  id: number;
+
+  @Field()
+  email: string;
+
+  @Field()
+  firstname: string;
+
+  @Field()
+  lastname: string;
+
+  @Field()
+  deliveryAdress: string;
+}

@@ -1,7 +1,6 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, InputType, ObjectType } from "type-graphql";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Reservation } from "./Reservation";
-
 
 @Entity()
 @ObjectType()
@@ -27,6 +26,21 @@ export class Product {
   price: number;
 
   @Field(() => [Reservation])
-  @OneToMany(() => Reservation, 'reservations')
+  @OneToMany(() => Reservation, "reservations")
   reservations: Reservation[];
+}
+
+@InputType()
+export class ProductInput {
+  @Field()
+  name: string;
+
+  @Field()
+  description: string;
+
+  @Field()
+  image: string;
+
+  @Field()
+  price: number;
 }

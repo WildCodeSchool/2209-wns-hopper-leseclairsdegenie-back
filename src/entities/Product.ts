@@ -14,11 +14,11 @@ export class Product {
   name: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   description: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   image: string;
 
   @Column()
@@ -35,10 +35,10 @@ export class ProductInput {
   @Field()
   name: string;
 
-  @Field()
+  @Field({ nullable: true })
   description: string;
 
-  @Field()
+  @Field({ nullable: true })
   image: string;
 
   @Field()

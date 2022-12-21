@@ -16,73 +16,73 @@ export class Cart {
   @Field(() => ID)
   id: number;
 
-  @ManyToOne(() => User, "cart", { onDelete: "CASCADE" })
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
+  @ManyToOne(() => User, "carts", { onDelete: "CASCADE" })
   user: User;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   billingName: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   billingAdress: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deliveryName: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deliveryAdress: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   totalPrice: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   taxes: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   flgValidated: boolean;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   createdDate: Date;
 
-  @Field(() => [Reservation])
-  @OneToMany(() => Reservation, "reservations")
+  @Field(() => [Reservation], { nullable: true })
+  @OneToMany(() => Reservation, "reservations", { nullable: true })
   reservations: Reservation[];
 }
 
 @InputType()
 export class CartInput {
-  @Field(() => UserInput)
+  @Field(() => UserInput, { nullable: true })
   user: UserInput;
 
-  @Field()
+  @Field({ nullable: true })
   billingName: string;
 
-  @Field()
+  @Field({ nullable: true })
   billingAdress: string;
 
-  @Field()
+  @Field({ nullable: true })
   deliveryName: string;
 
-  @Field()
+  @Field({ nullable: true })
   deliveryAdress: string;
 
-  @Field()
+  @Field({ nullable: true })
   totalPrice: number;
 
-  @Field()
+  @Field({ nullable: true })
   taxes: number;
 
-  @Field()
+  @Field({ nullable: true })
   flgValidated: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   createdDate: Date;
 }

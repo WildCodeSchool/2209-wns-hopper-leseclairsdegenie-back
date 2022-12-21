@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { isDate, IsEmail, isString, Length } from "class-validator";
+import { Cart } from "./Cart";
 
 @Entity()
 @ObjectType()
@@ -32,6 +33,10 @@ export class User {
   @Column({ nullable: true })
   @Field({ nullable: true })
   createdDate: Date;
+  
+  @Field(() => [Cart])
+  @OneToMany(() => Cart, "user")
+  carts: Cart[];
 }
 
 @InputType()
@@ -57,20 +62,20 @@ export class UserInput {
   createdDate: Date;
 }
 
-@InputType()
-export class UserReservation {
-  @Field()
-  id: number;
+// @InputType()
+// export class UserReservation {
+//   @Field()
+//   id: number;
 
-  @Field()
-  email: string;
+//   @Field()
+//   email: string;
 
-  @Field()
-  firstname: string;
+//   @Field()
+//   firstname: string;
 
-  @Field()
-  lastname: string;
+//   @Field()
+//   lastname: string;
 
-  @Field()
-  deliveryAdress: string;
-}
+//   @Field()
+//   deliveryAdress: string;
+// }

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType, InputType } from "type-graphql";
 import {
   Column,
   Entity,
@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Reservation } from "./Reservation";
-import { User, UserReservation } from "./User";
+import { User, UserInput } from "./User";
 
 @Entity()
 @ObjectType()
@@ -16,9 +16,9 @@ export class Cart {
   @Field(() => ID)
   id: number;
 
-  @ManyToOne(() => User, "carts", { onDelete: "CASCADE" })
-  @Field(() => User, { nullable: false })
-  user: UserReservation;
+  @ManyToOne(() => User, "cart", { onDelete: "CASCADE" })
+  @Field(() => User)
+  user: User;
 
   @Column()
   @Field()
@@ -55,4 +55,34 @@ export class Cart {
   @Field(() => [Reservation])
   @OneToMany(() => Reservation, "reservations")
   reservations: Reservation[];
+}
+
+@InputType()
+export class CartInput {
+  @Field(() => UserInput)
+  user: UserInput;
+
+  @Field()
+  billingName: string;
+
+  @Field()
+  billingAdress: string;
+
+  @Field()
+  deliveryName: string;
+
+  @Field()
+  deliveryAdress: string;
+
+  @Field()
+  totalPrice: number;
+
+  @Field()
+  taxes: number;
+
+  @Field()
+  flgValidated: boolean;
+
+  @Field()
+  createdDate: Date;
 }

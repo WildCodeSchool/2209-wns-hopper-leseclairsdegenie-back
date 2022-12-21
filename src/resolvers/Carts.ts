@@ -1,12 +1,14 @@
 import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
 import { Cart } from "../entities/Cart";
-import { User } from "../entities/User";
 import datasource from "../utils";
+import { CartInput } from "../entities/Cart";
 
 @Resolver()
 export class CartsResolver {
   @Mutation(() => Cart)
-  async creatCart(@Arg("data", () => Cart) data: Cart): Promise<Cart> {
+  async createCart(
+    @Arg("data", () => CartInput) data: CartInput
+  ): Promise<Cart> {
     return await datasource.getRepository(Cart).save(data);
   }
 
@@ -15,8 +17,13 @@ export class CartsResolver {
     return await datasource.getRepository(Cart).find({});
   }
 
+  @Query(() => Cart)
+  async cart(@Arg("Id", () => ID) id: number): Promise<Cart> {
+    return await datasource.getRepository(Cart).findOne({ where: { id } });
+  }
+
   @Mutation(() => Cart)
-  async deleteUser(@Arg("Id", () => ID) id: number): Promise<Cart> {
+  async deleteCart(@Arg("Id", () => ID) id: number): Promise<Cart> {
     let cart = await datasource.getRepository(Cart).findOne({ where: { id } });
     if (cart) {
       return await datasource.getRepository(Cart).remove(cart);
@@ -25,29 +32,14 @@ export class CartsResolver {
     }
   }
 
-  @Query(() => Cart)
-  async user(@Arg("Id", () => ID) id: number): Promise<Cart> {
-    return await datasource.getRepository(Cart).findOne({ where: { id } });
-  }
-
   @Mutation(() => Cart)
-  async updeateUser(
+  async updateCart(
     @Arg("Id", () => ID) id: number,
-    // @Arg("email") email: string,
-    // @Arg("lastname") lastname: string,
-    // @Arg("firstname") firstname: string,
-    // @Arg("deliveryAdress") deliveryAdress: string,
-    // @Arg("createdDate", () => Date) createdDate: Date
-    @Arg("data", () => Cart) data: Cart
+    @Arg("data", () => CartInput) data: CartInput
   ): Promise<Cart> {
     let cart = await datasource.getRepository(Cart).findOne({ where: { id } });
 
     if (cart) {
-      // user.email = data.email;
-      // user.lastname = data.lastname;
-      // user.firstname = data.firstname;
-      // user.deliveryAdress = data.deliveryAdress;
-      // user.createdDate = data.createdDate;
       return await datasource.getRepository(Cart).save({ ...cart, ...data });
     } else {
       return null;

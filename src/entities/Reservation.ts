@@ -18,31 +18,26 @@ export class Reservation {
   @Field(() => Cart, { nullable: false })
   cart: Cart;
 
-  @PrimaryGeneratedColumn()
-  @Field(() => ID)
-  id: number;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
   startDate: Date;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
   endDate: Date;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
   quantity: number;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
   price: number;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
   taxes: number;
 }
-<<<<<<< HEAD
 
 @InputType()
 export class ReservationInput {  
@@ -72,5 +67,3 @@ export class ReservationInput {
   @Field()
   taxes: number;
 }
-=======
->>>>>>> 77056cc43ae9fcf3c892c6d7a01eea2d8fb25a52

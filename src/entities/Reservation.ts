@@ -3,7 +3,6 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./Cart";
 import { Product } from "./Product";
 
-
 @Entity()
 @ObjectType()
 export class Reservation {
@@ -15,30 +14,35 @@ export class Reservation {
   @Field(() => Product, {nullable: false})
   product: Product;
 
-  @ManyToOne( () => Cart,'reservation', {onDelete: "CASCADE"})
-  @Field(() => Cart, {nullable: false})
+  @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
+  @Field(() => Cart, { nullable: false })
   cart: Cart;
 
-  @Column()
-  @Field()
+  @PrimaryGeneratedColumn()
+  @Field(() => ID)
+  id: number;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   startDate: Date;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   endDate: Date;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   quantity: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   price: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   taxes: number;
 }
+<<<<<<< HEAD
 
 @InputType()
 export class ReservationInput {  
@@ -68,3 +72,5 @@ export class ReservationInput {
   @Field()
   taxes: number;
 }
+=======
+>>>>>>> 77056cc43ae9fcf3c892c6d7a01eea2d8fb25a52

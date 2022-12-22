@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { isDate, IsEmail, isString, Length } from "class-validator";
 import { Cart, CartInput } from "./Cart";
@@ -33,9 +39,9 @@ export class User {
   @Column({ nullable: true })
   @Field({ nullable: true })
   createdDate: Date;
-  
-  @Field(() => [Cart], { nullable: true })
-  @OneToMany(() => Cart, "user")
+
+  @Field(() => [Cart])
+  @ManyToOne(() => Cart, "user", { onDelete: "CASCADE" })
   carts: Cart[];
 }
 
@@ -45,20 +51,20 @@ export class UserInput {
   @IsEmail()
   email: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Length(8, 60)
   password: string;
 
-  @Field()
+  @Field({ nullable: true })
   firstname: string;
 
-  @Field()
+  @Field({ nullable: true })
   lastname: string;
 
-  @Field()
+  @Field({ nullable: true })
   deliveryAdress: string;
 
-  @Field()
+  @Field({ nullable: true })
   createdDate: Date;
 
   @Field(() => [CartInput], { nullable: true })

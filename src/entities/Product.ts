@@ -25,7 +25,7 @@ export class Product {
   @Field()
   price: number;
 
-  @Field(() => [Reservation])
+  @Field(() => [Reservation], { nullable: true })
   @OneToMany(() => Reservation, "reservations")
   reservations: Reservation[];
 }

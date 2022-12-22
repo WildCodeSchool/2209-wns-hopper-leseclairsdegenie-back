@@ -49,7 +49,7 @@ export class Cart {
   flgValidated: boolean;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   createdDate: Date;
 
   @Field(() => [Reservation])
@@ -59,8 +59,8 @@ export class Cart {
 
 @InputType()
 export class CartInput {
-  @Field(() => UserInput)
-  user: UserInput;
+  @Field(() => ID)
+  userId: number;
 
   @Field()
   billingName: string;
@@ -83,6 +83,6 @@ export class CartInput {
   @Field()
   flgValidated: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   createdDate: Date;
 }

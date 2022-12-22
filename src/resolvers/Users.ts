@@ -34,7 +34,7 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  async updeateUser(
+  async updateUser(
     @Arg("Id", () => ID) id: number,
     // @Arg("email") email: string,
     // @Arg("lastname") lastname: string,

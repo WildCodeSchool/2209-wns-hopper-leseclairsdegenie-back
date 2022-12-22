@@ -35,7 +35,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
-  async updeateProduct(
+  async updateProduct(
     @Arg("Id", () => ID) id: number,
     @Arg("data", () => ProductInput) data: ProductInput
   ): Promise<Product> {

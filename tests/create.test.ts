@@ -1,6 +1,7 @@
-import { beforeAll, describe, it } from "@jest/globals";
+import { beforeAll, describe, expect, it } from "@jest/globals";
 import { graphql, GraphQLSchema, print } from "graphql";
 import { buildSchema } from "type-graphql";
+import { User } from "../src/entities/User";
 import { UsersResolver } from "../src/resolvers/Users";
 import datasource from "../src/utils";
 import { createUser } from "./graphql/createUser";
@@ -43,7 +44,14 @@ describe("users", () => {
                 },
               },
             });
-        }
-        )
+            expect(result.data.createUser).toBeTruthy();            
+        });
+        it("creates user in db", async () => {
+            const user = await datasource
+              .getRepository(User)
+              .findOneBy({ email: "toto@test.com" });
+            expect(user.password !== "supersecret").toBe(true);
+            expect(user).toBeDefined();
+          });
     })
 })

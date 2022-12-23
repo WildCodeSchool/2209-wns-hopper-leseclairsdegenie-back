@@ -51,7 +51,7 @@ export class UserInput {
   @IsEmail()
   email: string;
 
-  @Field({ nullable: true })
+  @Field()
   @Length(8, 60)
   password: string;
 

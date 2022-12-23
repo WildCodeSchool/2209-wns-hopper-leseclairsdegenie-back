@@ -21,13 +21,14 @@ async function bootstrap(): Promise<void> {
     cors: true,
   });
 
-  // Start the server
-  const { url } = await server.listen(PORT);
-  console.log(`Server is running, GraphQL Playground available at ${url}`);
+
 
   try {
     await datasource.initialize();
     console.log("Server started!");
+    // Start the server
+    const { url } = await server.listen(PORT);
+    console.log(`Server is running, GraphQL Playground available at ${url}`);
   } catch (err) {
     console.log("An error occured");
     console.error(err);

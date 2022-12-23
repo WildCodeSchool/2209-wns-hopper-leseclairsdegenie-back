@@ -8,6 +8,8 @@ services:
       - 5000:5000
     volumes:
       - ./src:/app/src
+    environment:
+      - DB_HOST=db
   db:
     image: postgres
     environment:

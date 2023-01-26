@@ -13,6 +13,8 @@ export class CategoryResolver {
 
   @Query(() => [Category])
   async getCategorys(): Promise<Category[]> {
-    return await datasource.getRepository(Category).find({});
+    return await datasource
+      .getRepository(Category)
+      .find({ relations: ["products"] });
   }
 }

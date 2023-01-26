@@ -2,6 +2,7 @@ import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
 import { Product, ProductInput } from "../entities/Product";
 import datasource from "../utils";
 import { hash } from "argon2";
+import { Category } from "../entities/Category";
 
 @Resolver()
 export class ProductsResolver {
@@ -9,7 +10,17 @@ export class ProductsResolver {
   async createProduct(
     @Arg("data", () => ProductInput) data: ProductInput
   ): Promise<Product> {
-    return await datasource.getRepository(Product).save(data);
+    const category = await datasource.getRepository(Category).findOneBy({
+      id: data.categoryId,
+    });
+    if (category.id != null) {
+      console.log(category);
+      const product = {
+        ...data,
+        category: { id: data.categoryId, name: category.name },
+      };
+      return await datasource.getRepository(Product).save(product);
+    }
   }
 
   @Query(() => [Product])

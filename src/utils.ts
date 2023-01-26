@@ -3,6 +3,7 @@ import { Cart } from "./entities/Cart";
 import { DataSource } from "typeorm";
 import { Reservation } from "./entities/Reservation";
 import { Product } from "./entities/Product";
+import { Category } from "./entities/Category";
 
 const datasource = new DataSource({
   type: "postgres",
@@ -12,7 +13,7 @@ const datasource = new DataSource({
   password: "supersecret",
   database: "postgres",
   synchronize: true,
-  entities: [User, Cart, Reservation, Product],
+  entities: [User, Cart, Reservation, Product, Category],
   logging: ["query", "error"],
 });
 

@@ -1,5 +1,12 @@
 import { Field, ID, InputType, ObjectType } from "type-graphql";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Category, CategoryInput } from "./Category";
 import { Reservation } from "./Reservation";
 
 @Entity()
@@ -13,7 +20,7 @@ export class Product {
   @Field()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field({ nullable: true })
   description: string;
 
@@ -25,9 +32,17 @@ export class Product {
   @Field()
   price: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  disponibility: boolean;
+
   @Field(() => [Reservation], { nullable: true })
-  @OneToMany(() => Reservation, "reservations")
+  @OneToMany(() => Reservation, "product")
   reservations: Reservation[];
+
+  @Field(() => Category, { nullable: true })
+  @ManyToOne(() => Category, "product", { nullable: true })
+  category: Category;
 }
 
 @InputType()
@@ -43,4 +58,10 @@ export class ProductInput {
 
   @Field()
   price: number;
+
+  @Field({ nullable: true })
+  disponibility: boolean;
+
+  @Field({ nullable: true })
+  categoryId: number;
 }

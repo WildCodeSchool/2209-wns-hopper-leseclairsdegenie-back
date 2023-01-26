@@ -8,6 +8,8 @@ RUN npm i
 
 COPY src src
 COPY tsconfig.json tsconfig.json
+COPY tests tests
+COPY jest.config.js jest.config.js
 
 # RUN tsc
 

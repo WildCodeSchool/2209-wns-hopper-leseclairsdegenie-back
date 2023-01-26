@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "test:docker": "docker compose -f docker-compose.test.yml up --build",
-    "start": "ts-node-dev src/index.ts"
+    "start": "ts-node-dev src/index.ts",
+    "startWin": "ts-node-dev --poll --respawn --transpile-only src/index.ts"
   },
   "author": "",
   "license": "ISC",

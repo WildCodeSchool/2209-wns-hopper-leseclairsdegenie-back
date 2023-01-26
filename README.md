@@ -10,7 +10,11 @@ This boilerplate contains:
 Everything is dockerized, just install Docker on you host machine then run:
 
 ```
+for linux and mac :
 docker compose up --build
+
+for win :
+docker compose -f docker-compose.win.yml up --build
 ```
 
 To work locally, you should install the NPM dependencies by running:

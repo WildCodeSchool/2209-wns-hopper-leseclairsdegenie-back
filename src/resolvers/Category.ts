@@ -17,4 +17,14 @@ export class CategoryResolver {
       .getRepository(Category)
       .find({ relations: ["products"] });
   }
+
+  @Query(() => Category)
+  async getOneCategory(
+    @Arg("categoryName", () => String) categoryName: string
+  ): Promise<Category> {
+    return await datasource.getRepository(Category).findOne({
+      where: { name: categoryName },
+      relations: ["products"],
+    });
+  }
 }

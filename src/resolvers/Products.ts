@@ -25,16 +25,19 @@ export class ProductsResolver {
 
   @Query(() => [Product])
   async products(): Promise<Product[]> {
-    return await datasource.getRepository(Product).find({});
+    return await datasource
+      .getRepository(Product)
+      .find({ relations: ["category"] });
   }
 
   @Mutation(() => Product)
   async deleteProduct(@Arg("Id", () => ID) id: number): Promise<Product> {
     let product = await datasource
       .getRepository(Product)
-      .findOne({ where: { id } });
+      .findOne({ where: { id }, relations: ["category"] });
     if (product) {
-      return await datasource.getRepository(Product).remove(product);
+      await datasource.getRepository(Product).remove(product);
+      return product;
     } else {
       return null;
     }
@@ -42,7 +45,9 @@ export class ProductsResolver {
 
   @Query(() => Product)
   async product(@Arg("Id", () => ID) id: number): Promise<Product> {
-    return await datasource.getRepository(Product).findOne({ where: { id } });
+    return await datasource
+      .getRepository(Product)
+      .findOne({ where: { id }, relations: ["category"] });
   }
 
   @Mutation(() => Product)

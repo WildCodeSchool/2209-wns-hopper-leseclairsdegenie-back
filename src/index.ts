@@ -3,6 +3,7 @@ import { ApolloServer } from "apollo-server";
 import datasource from "./utils";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/Users";
+import { authChecker } from "./auth";
 import { CartsResolver } from "./resolvers/Carts";
 import { ProductsResolver } from "./resolvers/Products";
 import { ReservationsResolver } from "./resolvers/Reservations";
@@ -20,12 +21,25 @@ async function bootstrap(): Promise<void> {
       ReservationsResolver,
       CategoryResolver,
     ],
+    authChecker,
   });
 
-  // Create the GraphQL server
+  // Create the GraphQL server and verify authorizarion
   const server = new ApolloServer({
     schema,
     cors: true,
+    context: ({ req }) => {
+      // Get the user token from the headers.
+      const authorization: string = req?.headers?.authorization;
+
+      if (authorization) {
+        // Bearer ...jwt
+        const token = authorization.split(" ").pop();
+        return { token };
+      }
+      // Add the user to the context
+      return { token: null };
+    },
   });
 
   try {

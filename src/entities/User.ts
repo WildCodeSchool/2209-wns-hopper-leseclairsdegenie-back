@@ -38,7 +38,7 @@ export class User {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  createdDate: Date;
+  createdAt: Date;
 
   @Field(() => [Cart])
   @ManyToOne(() => Cart, "user", { onDelete: "CASCADE" })
@@ -65,7 +65,7 @@ export class UserInput {
   deliveryAdress: string;
 
   @Field({ nullable: true })
-  createdDate: Date;
+  createdAt: Date;
 
   @Field(() => [CartInput], { nullable: true })
   carts: CartInput[];

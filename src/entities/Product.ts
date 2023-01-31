@@ -32,8 +32,8 @@ export class Product {
   @Field()
   price: number;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column({ default: true, nullable: true })
+  @Field({ defaultValue: true, nullable: true })
   disponibility: boolean;
 
   @Field(() => [Reservation], { nullable: true })
@@ -59,7 +59,7 @@ export class ProductInput {
   @Field()
   price: number;
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: true, nullable: true })
   disponibility: boolean;
 
   @Field({ nullable: true })

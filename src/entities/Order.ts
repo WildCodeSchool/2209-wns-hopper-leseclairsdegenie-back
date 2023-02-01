@@ -24,7 +24,11 @@ export class Order {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  billingName: string;
+  billingfirstname: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  billingLastname: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -32,7 +36,11 @@ export class Order {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  deliveryName: string;
+  deliveryfirstname: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  deliveryLastname: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -46,9 +54,9 @@ export class Order {
   @Field({ nullable: true })
   statusDelivery: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  createdAt: Date;
+  date: Date;
 
   @Field(() => [Reservation], { nullable: true })
   @OneToMany(() => Reservation, "order", { nullable: true })
@@ -65,13 +73,19 @@ export class OrderInput {
   userId: number;
 
   @Field({ nullable: true })
-  billingName: string;
+  billingfirstname: string;
+
+  @Field({ nullable: true })
+  billingLastname: string;
 
   @Field({ nullable: true })
   billingAdress: string;
 
   @Field({ nullable: true })
-  deliveryName: string;
+  deliveryfirstname: string;
+
+  @Field({ nullable: true })
+  deliveryLastname: string;
 
   @Field({ nullable: true })
   deliveryAdress: string;
@@ -83,7 +97,7 @@ export class OrderInput {
   taxes: number;
 
   @Field({ nullable: true })
-  createdDate: Date;
+  date: Date;
 
   @Field({ nullable: true })
   statusDelivery: string;

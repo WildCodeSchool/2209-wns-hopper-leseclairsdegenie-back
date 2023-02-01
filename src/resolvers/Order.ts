@@ -7,26 +7,27 @@ import datasource from "../utils";
 
 @Resolver()
 export class OrdersResolver {
-  @Authorized()
   @Mutation(() => Order)
   async createOrder(
     @Ctx() context: IContext,
     @Arg("data", () => OrderInput) data: OrderInput
   ): Promise<Order> {
-    console.log(context.user.id);
+
     const user = await datasource
       .getRepository(User)
       .findOne({ where: { id: data.userId } });
     const order: Partial<Order> = { ...data, user };
     //on crée une commande avec data
     const saveOrder = await datasource.getRepository(Order).save(order);
+    // mettre à jour reservations.order (le vider)
+   // mettre à jour order.cart (le vider)
     //on supprime le panier
-    if (saveOrder) {
-      let cartToDelete = await datasource
-        .getRepository(Cart)
-        .findOne({ where: { id: context.user.id } });
-      const deleteCart = await datasource.getRepository(Cart).delete(cartToDelete);
-    }
+    // if (saveOrder) {
+    //   let cartToDelete = await datasource
+    //     .getRepository(Cart)
+    //     .findOne({ where: { id: user.id } });
+    //   const deleteCart = await datasource.getRepository(Cart).clear(cartToDelete);
+    // }
     return saveOrder;
   }
 

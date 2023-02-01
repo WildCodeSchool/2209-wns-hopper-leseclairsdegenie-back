@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
 import { Cart } from "../entities/Cart";
+import { Order } from "../entities/Order";
 import { Product } from "../entities/Product";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
@@ -10,19 +11,31 @@ export class ReservationsResolver {
   async createReservation(
     @Arg("data", () => ReservationInput) data: ReservationInput
   ): Promise<Reservation> {
-    const cart = await datasource.getRepository(Cart).findOne({where: {id: data.cartId}});
-    const product = await datasource.getRepository(Product).findOne({where: {id: data.productId}});
-    const reservation: Partial<Reservation> = {...data, cart, product};
+    console.log(data);
+    const cart = await datasource
+      .getRepository(Cart)
+      .findOne({ where: { id: data.cartId } });
+    const product = await datasource
+      .getRepository(Product)
+      .findOne({ where: { id: data.productId } });
+    const order = await datasource
+      .getRepository(Order)
+      .findOne({ where: { id: data.orderId } });
+    const reservation: Partial<Reservation> = { ...data, cart, product, order };
     return await datasource.getRepository(Reservation).save(reservation);
   }
 
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
-    return await datasource.getRepository(Reservation).find({relations: ["product", "cart"]});
+    return await datasource
+      .getRepository(Reservation)
+      .find({ relations: ["product", "cart"] });
   }
 
   @Mutation(() => Reservation)
-  async deleteReservation(@Arg("Id", () => ID) id: number): Promise<Reservation> {
+  async deleteReservation(
+    @Arg("Id", () => ID) id: number
+  ): Promise<Reservation> {
     let reservation = await datasource
       .getRepository(Reservation)
       .findOne({ where: { id } });
@@ -35,7 +48,9 @@ export class ReservationsResolver {
 
   @Query(() => Reservation)
   async reservation(@Arg("Id", () => ID) id: number): Promise<Reservation> {
-    return await datasource.getRepository(Reservation).findOne({ where: { id }, relations: ["product", "cart"]});
+    return await datasource
+      .getRepository(Reservation)
+      .findOne({ where: { id }, relations: ["product", "cart"] });
   }
 
   @Mutation(() => Reservation)

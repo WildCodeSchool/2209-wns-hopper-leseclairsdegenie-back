@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { Cart } from "./Cart";
 import { Reservation } from "./Reservation";
-import { User, UserInput } from "./User";
+import { User } from "./User";
 
 @Entity()
 @ObjectType()

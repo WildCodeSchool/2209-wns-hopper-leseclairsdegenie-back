@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Category, CategoryInput } from "./Category";
+import { Category } from "./Category";
 import { Reservation } from "./Reservation";
 
 @Entity()
@@ -37,7 +37,7 @@ export class Product {
   disponibility: boolean;
 
   @Field(() => [Reservation], { nullable: true })
-  @OneToMany(() => Reservation, "product")
+  @OneToMany(() => Reservation, (reservation) => reservation.product)
   reservations: Reservation[];
 
   @Field(() => Category, { nullable: true })

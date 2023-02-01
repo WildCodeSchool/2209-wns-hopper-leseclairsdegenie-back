@@ -11,7 +11,6 @@ export class ReservationsResolver {
   async createReservation(
     @Arg("data", () => ReservationInput) data: ReservationInput
   ): Promise<Reservation> {
-    console.log(data);
     const cart = await datasource
       .getRepository(Cart)
       .findOne({ where: { id: data.cartId } });
@@ -28,8 +27,10 @@ export class ReservationsResolver {
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
+      
       .getRepository(Reservation)
-      .find({ relations: ["product", "cart"] });
+      
+      .find({  relations: ["product", "cart"]  });
   }
 
   @Mutation(() => Reservation)

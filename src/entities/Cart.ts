@@ -21,20 +21,28 @@ export class Cart {
   @OneToOne(() => User, "cart", { onDelete: "CASCADE" })
   user: User;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  billingName: string;
+  @Column()
+  @Field()
+  billingfirstname: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
+  billingLastname: string;
+
+  @Column()
+  @Field()
   billingAdress: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  deliveryName: string;
+  @Column()
+  @Field()
+  deliveryfirstname: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column()
+  @Field()
+  deliveryLastname: string;
+
+  @Column()
+  @Field()
   deliveryAdress: string;
 
   @Field(() => [Reservation], { nullable: true })
@@ -46,12 +54,6 @@ export class Cart {
 export class CartInput {
   @Field(() => ID)
   userId: number;
-
-  @Field({ nullable: true })
-  totalPrice: number;
-
-  @Field({ nullable: true })
-  flgValidated: boolean;
 
   @Field({ nullable: true })
   createdAt: Date;

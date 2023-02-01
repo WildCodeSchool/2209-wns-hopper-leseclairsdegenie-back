@@ -27,7 +27,7 @@ export const authChecker: AuthChecker<IContext> = async (
     // return true → stateless version!
     const user = await datasource
       .getRepository(User)
-      .findOne({ where: { id: userId }, relations: ["cart"] });
+      .findOne({ where: { id: userId }, relations: ["cart", "cart.reservations", "cart.reservations.product"] });
 
     // maybe useless?
     if (!user) {

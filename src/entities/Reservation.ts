@@ -10,17 +10,17 @@ export class Reservation {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
-  
-  @ManyToOne( () => Product,'reservation', {onDelete: "CASCADE"})
-  @Field(() => Product, {nullable: false})
+
+  @ManyToOne(() => Product, "reservation", { onDelete: "CASCADE" })
+  @Field(() => Product, { nullable: false })
   product: Product;
 
   @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
   @Field(() => Cart, { nullable: false })
   cart: Cart;
-  
-  @ManyToOne(() => Order, "reservation")
-  @Field(() => Order)
+
+  @ManyToOne(() => Order, "reservation", { nullable: true })
+  @Field(() => Order, { nullable: true })
   order: Order;
 
   @Column()
@@ -45,15 +45,9 @@ export class Reservation {
 }
 
 @InputType()
-export class ReservationInput {  
+export class ReservationInput {
   @Field(() => ID)
   productId: number;
-
-  @Field(() => ID)
-  orderId: number;
-
-  @Field(() => ID)
-  cartId: number;
 
   @Column()
   @Field()

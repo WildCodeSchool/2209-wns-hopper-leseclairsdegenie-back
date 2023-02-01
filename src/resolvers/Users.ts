@@ -19,14 +19,29 @@ export class UsersResolver {
   @Mutation(() => String, { nullable: true })
   async createUser(
     @Arg("data", () => UserInput) data: UserInput
-  ): Promise<string | null> {
+  ): Promise<Object | null> {
     try {
       data.password = await hash(data.password);
-      const newUser = await datasource.getRepository(User).save(data);
+      const newUser = await datasource
+        .getRepository(User)
+        .save({ ...data, createdAt: new Date() });
       if (newUser?.id) {
         const token = sign({ userId: newUser.id }, "supersecret!", {
           expiresIn: 3600,
         });
+
+        const dataCart: CartInput = {
+          billingfirstname: data.firstname,
+          billingLastname: data.lastname,
+          billingAdress: data.deliveryAdress,
+          deliveryfirstname: data.firstname,
+          deliveryLastname: data.lastname,
+          deliveryAdress: data.deliveryAdress,
+          lastTimeModified: new Date(),
+        };
+        await datasource
+          .getRepository(Cart)
+          .save({ ...dataCart, user: { id: newUser.id } });
         return token;
       } else {
         return null;
@@ -78,12 +93,16 @@ export class UsersResolver {
 
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return await datasource.getRepository(User).find({});
+    return await datasource.getRepository(User).find({
+      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+    });
   }
 
   @Mutation(() => User)
   async deleteUser(@Arg("Id", () => ID) id: number): Promise<User> {
-    let user = await datasource.getRepository(User).findOne({ where: { id } });
+    let user = await datasource.getRepository(User).findOne({
+      where: { id },
+    });
     if (user) {
       return await datasource.getRepository(User).remove(user);
     } else {
@@ -93,7 +112,10 @@ export class UsersResolver {
 
   @Query(() => User)
   async user(@Arg("Id", () => ID) id: number): Promise<User> {
-    return await datasource.getRepository(User).findOne({ where: { id } });
+    return await datasource.getRepository(User).findOne({
+      where: { id },
+      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+    });
   }
 
   @Mutation(() => User)

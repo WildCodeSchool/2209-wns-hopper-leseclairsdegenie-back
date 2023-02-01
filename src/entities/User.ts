@@ -2,15 +2,12 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
   OneToOne,
-  JoinTable,
   JoinColumn,
 } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { isDate, IsEmail, isString, Length } from "class-validator";
-import { Cart, CartInput } from "./Cart";
+import { IsEmail, Length } from "class-validator";
+import { Cart } from "./Cart";
 
 @Entity()
 @ObjectType()

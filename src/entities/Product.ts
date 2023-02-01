@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Category, CategoryInput } from "./Category";
+import { Category } from "./Category";
 import { Reservation } from "./Reservation";
 
 @Entity()

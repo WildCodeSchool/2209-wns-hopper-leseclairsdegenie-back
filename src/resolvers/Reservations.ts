@@ -1,5 +1,7 @@
 import { Resolver, Mutation, Arg, Query, ID, Ctx } from "type-graphql";
 import { IContext } from "../auth";
+import { Cart } from "../entities/Cart";
+import { Product } from "../entities/Product";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
 
@@ -12,7 +14,7 @@ export class ReservationsResolver {
   ): Promise<Reservation> {
     return await datasource.getRepository(Reservation).save({
       ...data,
-      cart: { id: data.cartId },
+      cart: { id: context.user.cart.id },
       product: { id: data.productId },
     });
   }
@@ -20,6 +22,7 @@ export class ReservationsResolver {
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
+
       .getRepository(Reservation)
       .find({ relations: ["product", "cart", "product.category"] });
   }

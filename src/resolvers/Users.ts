@@ -31,13 +31,15 @@ export class UsersResolver {
         });
 
         const dataCart: CartInput = {
-          billingName: data.lastname.concat(" ", data.firstname),
+          billingfirstname: data.firstname,
+          billingLastname: data.lastname,
           billingAdress: data.deliveryAdress,
-          deliveryName: data.lastname.concat(" ", data.firstname),
+          deliveryfirstname: data.firstname,
+          deliveryLastname: data.lastname,
           deliveryAdress: data.deliveryAdress,
-          createdAt: new Date(),
+          lastTimeModified: new Date(),
         };
-        const newCart = await datasource
+        await datasource
           .getRepository(Cart)
           .save({ ...dataCart, user: { id: newUser.id } });
         return token;
@@ -91,11 +93,9 @@ export class UsersResolver {
 
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return await datasource
-      .getRepository(User)
-      .find({
-        relations: ["cart", "cart.reservations", "cart.reservations.product"],
-      });
+    return await datasource.getRepository(User).find({
+      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+    });
   }
 
   @Mutation(() => User)

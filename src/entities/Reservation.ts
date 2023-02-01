@@ -1,6 +1,7 @@
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./Cart";
+import { Order } from "./Order";
 import { Product } from "./Product";
 
 @Entity()
@@ -17,6 +18,10 @@ export class Reservation {
   @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
   @Field(() => Cart, { nullable: false })
   cart: Cart;
+  
+  @ManyToOne(() => Order, "reservation")
+  @Field(() => Order)
+  order: Order;
 
   @Column()
   @Field()
@@ -43,6 +48,9 @@ export class Reservation {
 export class ReservationInput {  
   @Field(() => ID)
   productId: number;
+
+  @Field(() => ID)
+  orderId: number;
 
   @Field(() => ID)
   cartId: number;

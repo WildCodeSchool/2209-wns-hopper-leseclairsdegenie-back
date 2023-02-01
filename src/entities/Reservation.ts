@@ -18,9 +18,9 @@ export class Reservation {
   @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
   @Field(() => Cart, { nullable: false })
   cart: Cart;
-
-  @ManyToOne(() => Order, "reservation")
-  @Field(() => Order)
+  
+  @ManyToOne(() => Order, "reservation", { nullable: true })
+  @Field(() => Order, { nullable: true })
   order: Order;
 
   @Column()

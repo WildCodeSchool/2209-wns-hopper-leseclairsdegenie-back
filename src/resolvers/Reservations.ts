@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
 import { Cart } from "../entities/Cart";
+import { Order } from "../entities/Order";
 import { Product } from "../entities/Product";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
@@ -16,15 +17,20 @@ export class ReservationsResolver {
     const product = await datasource
       .getRepository(Product)
       .findOne({ where: { id: data.productId } });
-    const reservation: Partial<Reservation> = { ...data, cart, product };
+    const order = await datasource
+      .getRepository(Order)
+      .findOne({ where: { id: data.orderId } });
+    const reservation: Partial<Reservation> = { ...data, cart, product, order };
     return await datasource.getRepository(Reservation).save(reservation);
   }
 
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
+      
       .getRepository(Reservation)
-      .find({ relations: ["product", "cart"] });
+      
+      .find({  relations: ["product", "cart"]  });
   }
 
   @Mutation(() => Reservation)

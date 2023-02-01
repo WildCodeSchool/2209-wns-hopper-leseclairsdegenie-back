@@ -2,7 +2,6 @@ import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
 import { Cart } from "../entities/Cart";
 import datasource from "../utils";
 import { CartInput } from "../entities/Cart";
-import { User } from "../entities/User";
 
 @Resolver()
 export class CartsResolver {

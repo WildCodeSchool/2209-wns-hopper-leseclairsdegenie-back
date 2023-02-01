@@ -17,7 +17,7 @@ export class ProductsResolver {
       console.log(category);
       const product = {
         ...data,
-        category: { id: data.categoryId, name: category.name },
+        category: category,
       };
       return await datasource.getRepository(Product).save(product);
     }
@@ -27,14 +27,14 @@ export class ProductsResolver {
   async products(): Promise<Product[]> {
     return await datasource
       .getRepository(Product)
-      .find({ relations: ["category"] });
+      .find({ relations: {"category": true} });
   }
 
   @Mutation(() => Product)
   async deleteProduct(@Arg("Id", () => ID) id: number): Promise<Product> {
     let product = await datasource
       .getRepository(Product)
-      .findOne({ where: { id }, relations: ["category"] });
+      .findOne({ where: { id }, relations: {"category": true} });
     if (product) {
       await datasource.getRepository(Product).remove(product);
       return product;
@@ -47,7 +47,7 @@ export class ProductsResolver {
   async product(@Arg("Id", () => ID) id: number): Promise<Product> {
     return await datasource
       .getRepository(Product)
-      .findOne({ where: { id }, relations: ["category"] });
+      .findOne({ where: { id }, relations: {"category": true} });
   }
 
   @Mutation(() => Product)

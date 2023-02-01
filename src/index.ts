@@ -9,6 +9,7 @@ import { ProductsResolver } from "./resolvers/Products";
 import { ReservationsResolver } from "./resolvers/Reservations";
 import { CategoryResolver } from "./resolvers/Category";
 import { OrdersResolver } from "./resolvers/Order";
+import { Dev } from "./resolvers/Dev";
 
 const PORT = 5000;
 
@@ -22,6 +23,7 @@ async function bootstrap(): Promise<void> {
       ReservationsResolver,
       CategoryResolver,
       OrdersResolver,
+      Dev
     ],
     authChecker,
   });

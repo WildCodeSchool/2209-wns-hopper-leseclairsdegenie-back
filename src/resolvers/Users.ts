@@ -91,12 +91,18 @@ export class UsersResolver {
 
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return await datasource.getRepository(User).find({ relations: ["cart"] });
+    return await datasource
+      .getRepository(User)
+      .find({
+        relations: ["cart", "cart.reservations", "cart.reservations.product"],
+      });
   }
 
   @Mutation(() => User)
   async deleteUser(@Arg("Id", () => ID) id: number): Promise<User> {
-    let user = await datasource.getRepository(User).findOne({ where: { id } });
+    let user = await datasource.getRepository(User).findOne({
+      where: { id },
+    });
     if (user) {
       return await datasource.getRepository(User).remove(user);
     } else {
@@ -106,7 +112,10 @@ export class UsersResolver {
 
   @Query(() => User)
   async user(@Arg("Id", () => ID) id: number): Promise<User> {
-    return await datasource.getRepository(User).findOne({ where: { id } });
+    return await datasource.getRepository(User).findOne({
+      where: { id },
+      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+    });
   }
 
   @Mutation(() => User)

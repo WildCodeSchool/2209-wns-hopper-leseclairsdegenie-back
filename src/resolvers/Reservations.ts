@@ -1,6 +1,5 @@
-import { Resolver, Mutation, Arg, Query, ID } from "type-graphql";
-import { Cart } from "../entities/Cart";
-import { Product } from "../entities/Product";
+import { Resolver, Mutation, Arg, Query, ID, Ctx } from "type-graphql";
+import { IContext } from "../auth";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
 
@@ -8,23 +7,21 @@ import datasource from "../utils";
 export class ReservationsResolver {
   @Mutation(() => Reservation)
   async createReservation(
-    @Arg("data", () => ReservationInput) data: ReservationInput
+    @Arg("data", () => ReservationInput) data: ReservationInput,
+    @Ctx() context: IContext
   ): Promise<Reservation> {
-    const cart = await datasource
-      .getRepository(Cart)
-      .findOne({ where: { id: data.cartId } });
-    const product = await datasource
-      .getRepository(Product)
-      .findOne({ where: { id: data.productId } });
-    const reservation: Partial<Reservation> = { ...data, cart, product };
-    return await datasource.getRepository(Reservation).save(reservation);
+    return await datasource.getRepository(Reservation).save({
+      ...data,
+      cart: { id: data.cartId },
+      product: { id: data.productId },
+    });
   }
 
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
       .getRepository(Reservation)
-      .find({ relations: ["product", "cart"] });
+      .find({ relations: ["product", "cart", "product.category"] });
   }
 
   @Mutation(() => Reservation)

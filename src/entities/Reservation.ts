@@ -50,9 +50,6 @@ export class ReservationInput {
   productId: number;
 
   @Field(() => ID)
-  orderId: number;
-
-  @Field(() => ID)
   cartId: number;
 
   @Column()

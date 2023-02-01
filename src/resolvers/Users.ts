@@ -100,7 +100,9 @@ export class UsersResolver {
 
   @Mutation(() => User)
   async deleteUser(@Arg("Id", () => ID) id: number): Promise<User> {
-    let user = await datasource.getRepository(User).findOne({ where: { id } });
+    let user = await datasource.getRepository(User).findOne({
+      where: { id },
+    });
     if (user) {
       return await datasource.getRepository(User).remove(user);
     } else {

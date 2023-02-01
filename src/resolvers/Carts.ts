@@ -7,14 +7,19 @@ import { CartInput } from "../entities/Cart";
 export class CartsResolver {
   @Query(() => [Cart])
   async carts(): Promise<Cart[]> {
-    return await datasource.getRepository(Cart).find({ relations: ["user"] });
+    return await datasource
+      .getRepository(Cart)
+      .find({ relations: ["user", "reservations"] });
   }
 
   @Query(() => Cart)
   async cart(@Arg("Id", () => ID) id: number): Promise<Cart> {
     return await datasource
       .getRepository(Cart)
-      .findOne({ where: { id }, relations: ["user"] });
+      .findOne({
+        where: { id },
+        relations: ["user", "reservations", "reservations.product"],
+      });
   }
 
   @Mutation(() => Cart)

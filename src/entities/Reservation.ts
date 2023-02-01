@@ -18,7 +18,7 @@ export class Reservation {
   @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
   @Field(() => Cart, { nullable: false })
   cart: Cart;
-  
+
   @ManyToOne(() => Order, "reservation", { nullable: true })
   @Field(() => Order, { nullable: true })
   order: Order;
@@ -48,12 +48,6 @@ export class Reservation {
 export class ReservationInput {
   @Field(() => ID)
   productId: number;
-
-  @Field(() => ID)
-  orderId: number;
-
-  @Field(() => ID)
-  cartId: number;
 
   @Column()
   @Field()

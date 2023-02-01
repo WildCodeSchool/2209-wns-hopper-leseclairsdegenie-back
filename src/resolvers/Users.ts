@@ -19,14 +19,27 @@ export class UsersResolver {
   @Mutation(() => String, { nullable: true })
   async createUser(
     @Arg("data", () => UserInput) data: UserInput
-  ): Promise<string | null> {
+  ): Promise<Object | null> {
     try {
       data.password = await hash(data.password);
-      const newUser = await datasource.getRepository(User).save(data);
+      const newUser = await datasource
+        .getRepository(User)
+        .save({ ...data, createdAt: new Date() });
       if (newUser?.id) {
         const token = sign({ userId: newUser.id }, "supersecret!", {
           expiresIn: 3600,
         });
+
+        const dataCart: CartInput = {
+          billingName: data.lastname.concat(" ", data.firstname),
+          billingAdress: data.deliveryAdress,
+          deliveryName: data.lastname.concat(" ", data.firstname),
+          deliveryAdress: data.deliveryAdress,
+          createdAt: new Date(),
+        };
+        const newCart = await datasource
+          .getRepository(Cart)
+          .save({ ...dataCart, user: { id: newUser.id } });
         return token;
       } else {
         return null;
@@ -78,7 +91,7 @@ export class UsersResolver {
 
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return await datasource.getRepository(User).find({});
+    return await datasource.getRepository(User).find({ relations: ["cart"] });
   }
 
   @Mutation(() => User)

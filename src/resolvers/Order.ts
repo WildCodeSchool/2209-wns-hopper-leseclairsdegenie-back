@@ -25,7 +25,14 @@ export class OrdersResolver {
       let cartToDelete = await datasource
         .getRepository(Cart)
         .findOne({ where: { id: context.user.id } });
-      const deleteCart = await datasource.getRepository(Cart).delete(cartToDelete);
+      const newDataOfCart = {
+        ...cartToDelete,
+        reservations: null,
+      };
+      const deleteCart = await datasource
+        .getRepository(Cart)
+        .save(newDataOfCart);
+      console.log(deleteCart);
     }
     return saveOrder;
   }

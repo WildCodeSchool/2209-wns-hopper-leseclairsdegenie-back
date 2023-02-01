@@ -1,7 +1,6 @@
 import { Mutation, Resolver } from "type-graphql";
 import { Category } from "../entities/Category";
 import { Product } from "../entities/Product";
-import { User } from "../entities/User";
 import datasource from "../utils";
 
 @Resolver()
@@ -31,10 +30,15 @@ export class Dev {
         await datasource.getRepository(Category).save({ name: categories[i] });
       }
     }
-
+    const cyclesCategory = datasource.getRepository(Category).findOne({ where: { name: "Cycles" } });
+    console.log("ICI",(await cyclesCategory).id);
+    const mountainCategory = datasource.getRepository(Category).findOne({ where: { name: "Montagne" } });
+    const aquaCategory = datasource.getRepository(Category).findOne({ where: { name: "Sports aquatiques" } });
+    const winterCategory = datasource.getRepository(Category).findOne({ where: { name: "Sports d'hiver" } });
+    const campCategory = datasource.getRepository(Category).findOne({ where: { name: "Camping" } });
     const products = [
         {
-            "categoryId": 1,
+            "category": (await cyclesCategory),
             "name": "VTT électrique",
             "description": "Partez à l'aventure où vous le souhaitez avec ce vtt électrique",
             "disponibility": true,
@@ -42,7 +46,7 @@ export class Dev {
             "price": 35.00 
         },
         {
-            "categoryId": 2,
+            "category": (await mountainCategory),
             "name": "Sac à dos trekking 50L",
             "description": "Partez à l'aventure où vous le souhaitez avec ce sac à dos de randonnée",
             "disponibility": true,
@@ -50,7 +54,7 @@ export class Dev {
             "price": 10.00 
         },
         {
-            "categoryId": 3,
+            "category": (await aquaCategory),
             "name": "Masque de plongée",
             "description": "Partez à l'aventure où vous le souhaitez avec ce masque de plongée",
             "disponibility": true,
@@ -58,7 +62,7 @@ export class Dev {
             "price": 7.00 
         },
         {
-            "categoryId": 4,
+            "category": (await winterCategory),
             "name": "Snowboard",
             "description": "Partez à l'aventure où vous le souhaitez avec ce snowboard",
             "disponibility": true,
@@ -66,7 +70,7 @@ export class Dev {
             "price": 25.00 
         },
         {
-            "categoryId": 5,
+            "category": (await campCategory),
             "name": "Tente 2 pers",
             "description": "Partez à l'aventure où vous le souhaitez avec cette tente pour 2 personnes",
             "disponibility": true,
@@ -74,7 +78,7 @@ export class Dev {
             "price": 15.00 
         },
         {
-            "categoryId": 3,
+            "category": (await aquaCategory),
             "name": "Paddle",
             "description": "Partez à l'aventure où vous le souhaitez avec ce paddle",
             "disponibility": true,
@@ -82,7 +86,7 @@ export class Dev {
             "price": 40.00 
         },
         {
-            "categoryId": 2,
+            "category": (await mountainCategory),
             "name": "Baudrier",
             "description": "Partez à l'aventure où vous le souhaitez avec ce baudrier",
             "disponibility": true,
@@ -90,7 +94,7 @@ export class Dev {
             "price": 12.00 
         },
         {
-            "categoryId": 4,
+            "category": (await winterCategory),
             "name": "Paire de skis",
             "description": "Partez à l'aventure où vous le souhaitez avec cette paire de ski",
             "disponibility": true,

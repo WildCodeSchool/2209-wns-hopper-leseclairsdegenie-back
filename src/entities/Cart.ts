@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Reservation } from "./Reservation";
@@ -16,8 +17,8 @@ export class Cart {
   @Field(() => ID)
   id: number;
 
-  @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, "cart", { onDelete: "CASCADE" })
+  @Field(() => User)
+  @OneToOne(() => User, "cart", { onDelete: "CASCADE" })
   user: User;
 
   @Column({ nullable: true })

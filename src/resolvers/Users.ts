@@ -12,6 +12,7 @@ import datasource from "../utils";
 import { hash, verify } from "argon2";
 import { sign } from "jsonwebtoken";
 import { IContext } from "../auth";
+import { Cart, CartInput } from "../entities/Cart";
 
 @Resolver()
 export class UsersResolver {
@@ -65,8 +66,15 @@ export class UsersResolver {
   @Authorized()
   @Query(() => User, { nullable: true })
   async me(@Ctx() context: IContext): Promise<User | null> {
+    if (!context.user.cart) {
+      await datasource
+        .getRepository(Cart)
+        .save({ user: { id: context.user.id } });
+    }
+    console.log("ici", context.user);
     return context.user;
   }
+  // créer le panier s'il n'existe pas
 
   @Query(() => [User])
   async users(): Promise<User[]> {

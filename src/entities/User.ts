@@ -4,6 +4,9 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  OneToOne,
+  JoinTable,
+  JoinColumn,
 } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { isDate, IsEmail, isString, Length } from "class-validator";
@@ -40,9 +43,10 @@ export class User {
   @Field({ nullable: true })
   createdAt: Date;
 
-  @Field(() => [Cart])
-  @ManyToOne(() => Cart, "user", { onDelete: "CASCADE" })
-  carts: Cart[];
+  @Field(() => Cart)
+  @OneToOne(() => Cart, "user")
+  @JoinColumn()
+  cart: Cart;
 }
 
 @InputType()
@@ -66,7 +70,4 @@ export class UserInput {
 
   @Field({ nullable: true })
   createdAt: Date;
-
-  @Field(() => [CartInput], { nullable: true })
-  carts: CartInput[];
 }

@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Order } from "./Order";
 import { Reservation } from "./Reservation";
-import { User, UserInput } from "./User";
+import { User } from "./User";
 
 @Entity()
 @ObjectType()

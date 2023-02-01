@@ -43,8 +43,8 @@ export class User {
   @Field({ nullable: true })
   createdAt: Date;
 
-  @Field(() => Cart)
-  @OneToOne(() => Cart, "user")
+  @Field(() => Cart, { nullable: true })
+  @OneToOne(() => Cart, "user", { nullable: true })
   @JoinColumn()
   cart: Cart;
 }

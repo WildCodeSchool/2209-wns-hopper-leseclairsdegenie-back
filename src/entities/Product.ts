@@ -37,7 +37,7 @@ export class Product {
   disponibility: boolean;
 
   @Field(() => [Reservation], { nullable: true })
-  @OneToMany(() => Reservation, "product")
+  @OneToMany(() => Reservation, (reservation) => reservation.product)
   reservations: Reservation[];
 
   @Field(() => Category, { nullable: true })

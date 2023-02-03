@@ -98,6 +98,35 @@ export class ReservationsResolver {
       return null;
     }
   }
+  
+  @Authorized()
+  @Mutation(() => Boolean)
+  async verifyReservationsList(
+    @Arg("Id", () => ID) id: number,
+    @Ctx() context: IContext
+  ): Promise<boolean> {
+    const currentCart = context.user.cart;
+    let cart = await datasource.getRepository(Cart).findOne({
+      where: { id: currentCart.id },
+    });
+    if (
+      cart &&
+      Number(currentCart.id) === Number(id) &&
+      Number(id) === Number(cart.id)
+    ) {
+      console.log(currentCart);
+      const productNotAvailable = currentCart.reservations.find(
+        (reservation) => reservation.product.disponibility === false
+      );
+      console.log(productNotAvailable);
+      if (productNotAvailable) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
 
   @Mutation(() => Reservation)
   async updateQuantityReservation(

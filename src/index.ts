@@ -23,11 +23,15 @@ async function bootstrap(): Promise<void> {
       ReservationsResolver,
       CategoryResolver,
       OrdersResolver,
+      Dev,
     ],
     validate: {
       forbidUnknownValues: false,
     },
     authChecker,
+    validate: {
+      forbidUnknownValues: false,
+    },
   });
 
   // Create the GraphQL server and verify authorizarion

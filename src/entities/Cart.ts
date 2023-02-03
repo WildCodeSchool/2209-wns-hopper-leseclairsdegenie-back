@@ -79,4 +79,7 @@ export class CartInput {
 
   @Field({ nullable: true })
   deliveryAdress: string;
+  
+  @Field({ nullable: true })
+  lastTimeModified: Date;
 }

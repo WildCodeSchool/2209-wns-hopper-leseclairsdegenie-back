@@ -23,8 +23,10 @@ async function bootstrap(): Promise<void> {
       ReservationsResolver,
       CategoryResolver,
       OrdersResolver,
-      Dev
     ],
+    validate: {
+      forbidUnknownValues: false,
+    },
     authChecker,
   });
 

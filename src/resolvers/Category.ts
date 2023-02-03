@@ -15,14 +15,14 @@ export class CategoryResolver {
   async categories(): Promise<Category[]> {
     return await datasource
       .getRepository(Category)
-      .find({ relations: {"products": true} });
+      .find({ relations: ["products"] });
   }
 
   @Query(() => Category)
   async category(@Arg("Id", () => ID) id: number): Promise<Category> {
     return await datasource.getRepository(Category).findOne({
       where: { id: id },
-      relations: {"products": true},
+      relations: ["products"],
     });
   }
 }

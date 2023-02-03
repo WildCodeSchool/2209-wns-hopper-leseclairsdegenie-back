@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, InputType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -51,7 +52,12 @@ export class Cart {
 
   @Field(() => Order, { nullable: true })
   @OneToOne(() => Order, "cart", { nullable: true })
+  @JoinColumn()
   order: Order;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  lastTimeModified: Date;
 }
 
 @InputType()
@@ -73,7 +79,4 @@ export class CartInput {
 
   @Field({ nullable: true })
   deliveryAdress: string;
-
-  @Field({ nullable: true })
-  lastTimeModified: Date;
 }

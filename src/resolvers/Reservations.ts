@@ -98,7 +98,7 @@ export class ReservationsResolver {
       return null;
     }
   }
-  
+
   @Authorized()
   @Mutation(() => Boolean)
   async verifyReservationsList(
@@ -127,7 +127,7 @@ export class ReservationsResolver {
     } else {
       return false;
     }
-
+  }
   @Mutation(() => Reservation)
   async updateQuantityReservation(
     @Arg("newQuantity", () => Number) newQuantity: number,

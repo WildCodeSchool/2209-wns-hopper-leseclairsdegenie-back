@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, InputType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -50,7 +51,7 @@ export class Order {
   @Field({ nullable: true })
   totalPrice: number;
 
-  @Column({ nullable: true, default: ["Expected", "In progress", "Delivered"] })
+  @Column({ nullable: true })
   @Field({ nullable: true })
   statusDelivery: string;
 
@@ -59,46 +60,33 @@ export class Order {
   date: Date;
 
   @Field(() => [Reservation], { nullable: true })
-  @OneToMany(() => Reservation, "order", { nullable: true })
+  @OneToMany(() => Reservation, "order", { nullable: true, cascade: true })
   reservations: Reservation[];
-
-  @Field(() => Cart, { nullable: true })
-  @OneToOne(() => Cart, "order", { nullable: true })
-  cart: Cart;
 }
 
 @InputType()
 export class OrderInput {
-  @Field(() => ID)
-  userId: number;
+  @Field()
+  cartId: number;
 
-  @Field({ nullable: true })
-  billingfirstname: string;
+  // @Field({ nullable: true })
+  // deliveryfirstname: string;
 
-  @Field({ nullable: true })
-  billingLastname: string;
+  // @Field({ nullable: true })
+  // deliveryLastname: string;
 
-  @Field({ nullable: true })
-  billingAdress: string;
+  // @Field({ nullable: true })
+  // deliveryAdress: string;
 
-  @Field({ nullable: true })
-  deliveryfirstname: string;
+  // @Field({ nullable: true })
+  // totalPrice: number;
 
-  @Field({ nullable: true })
-  deliveryLastname: string;
+  // @Field({ nullable: true })
+  // taxes: number;
 
-  @Field({ nullable: true })
-  deliveryAdress: string;
+  // @Field({ nullable: true })
+  // date: Date;
 
-  @Field({ nullable: true })
-  totalPrice: number;
-
-  @Field({ nullable: true })
-  taxes: number;
-
-  @Field({ nullable: true })
-  date: Date;
-
-  @Field({ nullable: true })
-  statusDelivery: string;
+  // @Field({ nullable: true })
+  // statusDelivery: string;
 }

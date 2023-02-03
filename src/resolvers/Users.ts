@@ -37,11 +37,12 @@ export class UsersResolver {
           deliveryfirstname: data.firstname,
           deliveryLastname: data.lastname,
           deliveryAdress: data.deliveryAdress,
-          lastTimeModified: new Date(),
         };
-        await datasource
-          .getRepository(Cart)
-          .save({ ...dataCart, user: { id: newUser.id } });
+        await datasource.getRepository(Cart).save({
+          ...dataCart,
+          user: { id: newUser.id },
+          lastTimeModified: new Date(),
+        });
         return token;
       } else {
         return null;
@@ -89,12 +90,18 @@ export class UsersResolver {
     console.log("ici", context.user);
     return context.user;
   }
-  // créer le panier s'il n'existe pas
 
   @Query(() => [User])
   async users(): Promise<User[]> {
     return await datasource.getRepository(User).find({
-      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+      relations: [
+        "cart",
+        "cart.reservations",
+        "cart.reservations.product",
+        "orders",
+        "orders.reservations",
+        "orders.reservations.product",
+      ],
     });
   }
 
@@ -111,10 +118,18 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  async user(@Arg("Id", () => ID) id: number): Promise<User> {
+  async user(@Ctx() context: IContext): Promise<User> {
+    console.log(context.user.id);
     return await datasource.getRepository(User).findOne({
-      where: { id },
-      relations: ["cart", "cart.reservations", "cart.reservations.product"],
+      where: { id: context.user.id },
+      relations: [
+        "cart",
+        "cart.reservations",
+        "cart.reservations.product",
+        "orders",
+        "orders.reservations",
+        "orders.reservations.product",
+      ],
     });
   }
 

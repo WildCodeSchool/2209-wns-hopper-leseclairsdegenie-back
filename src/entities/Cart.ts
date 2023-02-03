@@ -52,6 +52,10 @@ export class Cart {
   @Field(() => Order, { nullable: true })
   @OneToOne(() => Order, "cart", { nullable: true })
   order: Order;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  lastTimeModified: Date;
 }
 
 @InputType()

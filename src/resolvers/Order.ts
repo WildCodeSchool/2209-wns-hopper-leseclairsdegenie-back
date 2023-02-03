@@ -77,7 +77,7 @@ export class OrdersResolver {
         where: { id: saveOrder.id },
         relations: ["user", "reservations", "reservations.product"],
       });
-
+      console.log(result);
       return {
         ...result,
       };

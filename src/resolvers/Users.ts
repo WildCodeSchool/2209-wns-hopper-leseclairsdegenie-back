@@ -37,11 +37,11 @@ export class UsersResolver {
           deliveryfirstname: data.firstname,
           deliveryLastname: data.lastname,
           deliveryAdress: data.deliveryAdress,
+          lastTimeModified: new Date(),
         };
         await datasource.getRepository(Cart).save({
           ...dataCart,
           user: { id: newUser.id },
-          lastTimeModified: new Date(),
         });
         return token;
       } else {
@@ -87,7 +87,6 @@ export class UsersResolver {
         .getRepository(Cart)
         .save({ user: { id: context.user.id } });
     }
-    console.log("ici", context.user);
     return context.user;
   }
 

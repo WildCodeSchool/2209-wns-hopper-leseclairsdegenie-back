@@ -114,12 +114,25 @@ export class ReservationsResolver {
       Number(currentCart.id) === Number(id) &&
       Number(id) === Number(cart.id)
     ) {
-      console.log(currentCart);
-      const productNotAvailable = currentCart.reservations.find(
-        (reservation) => reservation.product.disponibility === false
-      );
-      console.log(productNotAvailable);
-      if (productNotAvailable) {
+      const verifyProduct = () => {
+        if (currentCart.reservations.length === 0) {
+          return false;
+        }
+        if (currentCart.reservations.length >= 1) {
+          console.log("-----------------------");
+          const productVerified = currentCart.reservations.filter(
+            (reservation) => reservation.product.disponibility === false
+          );
+          console.log(productVerified);
+          if (productVerified.length === 0) {
+            return true;
+          }
+          if (productVerified.length >= 1) {
+            return false;
+          }
+        }
+      };
+      if (!verifyProduct()) {
         return false;
       } else {
         return true;

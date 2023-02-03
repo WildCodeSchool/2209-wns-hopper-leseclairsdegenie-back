@@ -16,31 +16,31 @@ export class Reservation {
   product: Product;
 
   @ManyToOne(() => Cart, "reservation", { onDelete: "CASCADE" })
-  @Field(() => Cart, { nullable: false })
+  @Field(() => Cart, { nullable: true })
   cart: Cart;
 
   @ManyToOne(() => Order, "reservation", { nullable: true })
   @Field(() => Order, { nullable: true })
   order: Order;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   startDate: Date;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   endDate: Date;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   quantity: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   price: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   taxes: number;
 }
 
@@ -49,23 +49,18 @@ export class ReservationInput {
   @Field(() => ID)
   productId: number;
 
-  @Column()
-  @Field()
-  startDate: Date;
-
-  @Column()
-  @Field()
-  endDate: Date;
-
-  @Column()
   @Field()
   quantity: number;
 
-  @Column()
   @Field()
   price: number;
 
-  @Column()
-  @Field()
+  @Field({ nullable: true })
+  startDate: Date;
+
+  @Field({ nullable: true })
+  endDate: Date;
+
+  @Field({ nullable: true })
   taxes: number;
 }

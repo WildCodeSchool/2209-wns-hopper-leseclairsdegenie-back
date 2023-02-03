@@ -25,7 +25,12 @@ export class CartsResolver {
   async cart(@Arg("Id", () => ID) id: number): Promise<Cart> {
     return await datasource.getRepository(Cart).findOne({
       where: { id },
-      relations: ["user", "reservations", "reservations.product"],
+      relations: [
+        "user",
+        "reservations",
+        "reservations.product",
+        "reservations.cart",
+      ],
     });
   }
 

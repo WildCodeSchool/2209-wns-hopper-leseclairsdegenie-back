@@ -32,12 +32,16 @@ export class Product {
   @Field()
   price: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  quantity: number;
+
   @Column({ default: true, nullable: true })
   @Field({ defaultValue: true, nullable: true })
   disponibility: boolean;
 
   @Field(() => [Reservation], { nullable: true })
-  @OneToMany(() => Reservation, (reservation) => reservation.product)
+  @OneToMany(() => Reservation, "product", { nullable: true })
   reservations: Reservation[];
 
   @Field(() => Category, { nullable: true })
@@ -58,6 +62,9 @@ export class ProductInput {
 
   @Field()
   price: number;
+
+  @Field({ nullable: true })
+  quantity: number;
 
   @Field({ defaultValue: true, nullable: true })
   disponibility: boolean;

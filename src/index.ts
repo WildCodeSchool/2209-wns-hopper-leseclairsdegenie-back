@@ -25,6 +25,9 @@ async function bootstrap(): Promise<void> {
       OrdersResolver,
       Dev,
     ],
+    validate: {
+      forbidUnknownValues: false,
+    },
     authChecker,
     validate: {
       forbidUnknownValues: false,

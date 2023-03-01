@@ -29,9 +29,6 @@ async function bootstrap(): Promise<void> {
       forbidUnknownValues: false,
     },
     authChecker,
-    validate: {
-      forbidUnknownValues: false,
-    },
   });
 
   // Create the GraphQL server and verify authorizarion

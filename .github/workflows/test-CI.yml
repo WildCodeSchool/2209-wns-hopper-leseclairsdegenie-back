@@ -1,0 +1,12 @@
+name: testing-back
+
+on: pull_request
+
+jobs:
+  test-back:
+    runs-on: ubuntu-lastest
+    steps:
+      - name: Check out Code
+        run: actions/hceckout@v2
+      - name: Run test
+        run: yarn test:ci

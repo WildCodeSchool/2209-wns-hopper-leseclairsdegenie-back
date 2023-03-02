@@ -7,6 +7,6 @@ jobs:
     runs-on: ubuntu-lastest
     steps:
       - name: Check out Code
-        run: actions/hceckout@v2
+        uses: actions/checkout@v2
       - name: Run test
         run: yarn test:ci

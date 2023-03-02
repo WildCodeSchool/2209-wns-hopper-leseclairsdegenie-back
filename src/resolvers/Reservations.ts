@@ -146,6 +146,7 @@ export class ReservationsResolver {
     @Arg("newQuantity", () => Number) newQuantity: number,
     @Arg("Id", () => ID) id: number
   ): Promise<Reservation> {
+    console.log("reservation");
     let reservation = await datasource
       .getRepository(Reservation)
       .findOne({ where: { id: id } });

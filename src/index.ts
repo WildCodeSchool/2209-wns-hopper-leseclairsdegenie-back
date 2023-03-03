@@ -11,6 +11,7 @@ import { CategoryResolver } from "./resolvers/Category";
 import { OrdersResolver } from "./resolvers/Order";
 import { Dev } from "./resolvers/Dev";
 
+// just a test to triger CI
 const PORT = 5000;
 
 async function bootstrap(): Promise<void> {

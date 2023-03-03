@@ -42,6 +42,10 @@ export class Reservation {
   @Column({ nullable: true })
   @Field({ nullable: true })
   taxes: number;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  nbJours: number;
 }
 
 @InputType()
@@ -51,9 +55,6 @@ export class ReservationInput {
 
   @Field()
   quantity: number;
-
-  @Field()
-  price: number;
 
   @Field({ nullable: true })
   startDate: Date;

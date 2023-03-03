@@ -6,6 +6,7 @@ import {
   ID,
   Authorized,
   Ctx,
+  FieldResolver,
 } from "type-graphql";
 import { Cart } from "../entities/Cart";
 import datasource from "../utils";
@@ -51,7 +52,7 @@ export class CartsResolver {
     @Arg("data", () => CartInput) data: CartInput,
     @Ctx() context: IContext
   ): Promise<Cart | null> {
-    const currentCart = context.user.cart
+    const currentCart = context.user.cart;
     let cart = await datasource
       .getRepository(Cart)
       .findOne({ where: { id: currentCart.id } });
@@ -69,6 +70,27 @@ export class CartsResolver {
         .getRepository(Cart)
         .save({ ...currentCart, ...dataCart });
     } else {
+      return null;
+    }
+  }
+
+  @Mutation(() => Cart, { nullable: true })
+  async addPriceCart(
+    @Arg("price", () => Number) price: number,
+    @Ctx() context: IContext
+  ): Promise<Cart | null> {
+    const currentCart = context.user.cart;
+    console.log(currentCart);
+    let cart = await datasource
+      .getRepository(Cart)
+      .findOne({ where: { id: currentCart.id } });
+    if (cart) {
+      console.log(cart);
+      return await datasource
+        .getRepository(Cart)
+        .save({ ...cart, totalePrice: price });
+    } else {
+      console.log("null");
       return null;
     }
   }

@@ -10,6 +10,7 @@ import {
 import { getRepository } from "typeorm";
 import { IContext } from "../auth";
 import { Cart } from "../entities/Cart";
+import { Product } from "../entities/Product";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
 
@@ -22,10 +23,23 @@ export class ReservationsResolver {
     @Ctx() context: IContext
   ): Promise<Reservation> {
     try {
+      const debut = new Date(data.startDate).getTime();
+      const fin = new Date(data.endDate).getTime();
+      const nbJour = (fin - debut) / (1000 * 60 * 60 * 24);
+
+      const productReservation = await datasource
+        .getRepository(Product)
+        .findOne({ where: { id: data.productId } });
+
+      const priceReservation =
+        productReservation.price * data.quantity * nbJour;
+
       const reservationCreated = await datasource
         .getRepository(Reservation)
         .save({
           ...data,
+          price: priceReservation,
+          nbJours: nbJour,
           cart: { id: context.user.cart.id },
           product: { id: data.productId },
         });
@@ -67,8 +81,10 @@ export class ReservationsResolver {
     let reservation = await datasource
       .getRepository(Reservation)
       .findOne({ where: { id } });
+
     if (reservation) {
-      return await datasource.getRepository(Reservation).remove(reservation);
+      await datasource.getRepository(Reservation).remove(reservation);
+      return { ...reservation, id };
     } else {
       return null;
     }

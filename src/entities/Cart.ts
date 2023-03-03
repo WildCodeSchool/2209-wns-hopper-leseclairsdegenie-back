@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, InputType } from "type-graphql";
+import { Field, ID, ObjectType, InputType, Ctx } from "type-graphql";
 import {
   Column,
   Entity,
@@ -7,6 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { IContext } from "../auth";
 import { Order } from "./Order";
 import { Reservation } from "./Reservation";
 import { User } from "./User";
@@ -58,6 +59,17 @@ export class Cart {
   @Column({ nullable: true })
   @Field({ nullable: true })
   lastTimeModified: Date;
+
+  @Field({ nullable: true })
+  totalePrice(@Ctx() context: IContext): number | null {
+    const reservations = context.user.cart.reservations;
+    let totalePanier = 0;
+    reservations.map((resa) => {
+      return (totalePanier += resa.price);
+    });
+
+    return totalePanier;
+  }
 }
 
 @InputType()
@@ -79,7 +91,7 @@ export class CartInput {
 
   @Field({ nullable: true })
   deliveryAdress: string;
-  
+
   @Field({ nullable: true })
   lastTimeModified: Date;
 }

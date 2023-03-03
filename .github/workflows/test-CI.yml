@@ -1,12 +1,12 @@
-name: testing-back
+name: jest-and-docker-ci
 
-on: pull_request
+on: push
 
 jobs:
-  test-back:
-    runs-on: ubuntu-lastest
+  test-front:
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out Code
+      - name: Check out code
         uses: actions/checkout@v2
-      - name: Run test
-        run: yarn test:ci
+      - name: Goto client and run tests
+        run: cd client && npm i && npm test

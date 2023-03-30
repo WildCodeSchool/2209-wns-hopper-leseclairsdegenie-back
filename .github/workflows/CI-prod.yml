@@ -3,7 +3,7 @@ name: docker-back
 on:
   push:
     branches:
-      - "dev"
+      - "main"
 
 jobs:
   docker-back:
@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: lesgenies/back:latest
+          tags: lesgenies/back:prod

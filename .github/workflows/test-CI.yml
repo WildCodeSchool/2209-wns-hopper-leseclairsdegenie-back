@@ -1,0 +1,19 @@
+name: testing-back
+
+on:
+  - pull_request
+  - push:
+      branches:
+        - "dev"
+
+jobs:
+  test-back:
+    runs-on: ubuntu-latest # contains Docker + Docker compose
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      # required without Docker
+      - name: Install deps
+        run: npm i
+      - name: Run test
+        run: npm run test:ci

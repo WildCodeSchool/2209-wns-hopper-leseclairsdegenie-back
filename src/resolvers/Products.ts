@@ -10,6 +10,7 @@ export class ProductsResolver {
   async createProduct(
     @Arg("data", () => ProductInput) data: ProductInput
   ): Promise<Product> {
+    console.log(data);
     const category = await datasource.getRepository(Category).findOneBy({
       id: data.categoryId,
     });
@@ -27,14 +28,14 @@ export class ProductsResolver {
   async products(): Promise<Product[]> {
     return await datasource
       .getRepository(Product)
-      .find({ relations: {"category": true} });
+      .find({ relations: { category: true } });
   }
 
   @Mutation(() => Product)
   async deleteProduct(@Arg("Id", () => ID) id: number): Promise<Product> {
     let product = await datasource
       .getRepository(Product)
-      .findOne({ where: { id }, relations: {"category": true} });
+      .findOne({ where: { id }, relations: { category: true } });
     if (product) {
       await datasource.getRepository(Product).remove(product);
       return product;
@@ -47,22 +48,49 @@ export class ProductsResolver {
   async product(@Arg("Id", () => ID) id: number): Promise<Product> {
     return await datasource
       .getRepository(Product)
-      .findOne({ where: { id }, relations: {"category": true} });
+      .findOne({ where: { id }, relations: { category: true } });
   }
 
   @Mutation(() => Product)
   async updateProduct(
     @Arg("Id", () => ID) id: number,
-    @Arg("data", () => ProductInput) data: ProductInput
+    @Arg("quantityReserved", () => Number, { nullable: true })
+    quantityReserved: number,
+    @Arg("newPrice", () => Number, { nullable: true }) newPrice: number,
+    @Arg("newQuantity", () => Number, { nullable: true }) newQuantity: number
   ): Promise<Product> {
     let product = await datasource
       .getRepository(Product)
       .findOne({ where: { id } });
+    let newDisponibility = product.disponibility;
+    let quantityUpdate = product.quantity;
+
+    // Mettre à jour la quantité après un arrivage de nouvelle marchandise
+    if (newQuantity) {
+      if (quantityUpdate) {
+        quantityUpdate += newQuantity;
+      } else {
+        quantityUpdate = newQuantity;
+      }
+    }
+
+    // mettre à jour les quantité après uen réservation
+    if (quantityReserved) {
+      if (product.quantity - quantityReserved <= 0) {
+        quantityUpdate = 0;
+        newDisponibility = false;
+      } else {
+        quantityUpdate = product.quantity - quantityReserved;
+      }
+    }
 
     if (product) {
-      return await datasource
-        .getRepository(Product)
-        .save({ ...product, ...data });
+      return await datasource.getRepository(Product).save({
+        ...product,
+        quantity: quantityUpdate,
+        disponibility: newDisponibility,
+        price: newPrice ? newPrice : product.price,
+      });
     } else {
       return null;
     }

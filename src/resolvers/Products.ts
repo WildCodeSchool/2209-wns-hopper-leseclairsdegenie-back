@@ -28,7 +28,7 @@ export class ProductsResolver {
   async products(): Promise<Product[]> {
     return await datasource
       .getRepository(Product)
-      .find({ relations: { category: true } });
+      .find({ relations: ["category"] });
   }
 
   @Mutation(() => Product)

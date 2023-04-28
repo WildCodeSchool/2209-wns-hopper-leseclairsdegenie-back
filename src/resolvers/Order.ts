@@ -19,6 +19,19 @@ export class OrdersResolver {
       relations: ["reservations", "reservations.product"],
     });
 
+    const totalOfReservations = cartToDelete.reservations.map(
+      (reservation) =>
+        reservation.product.price *
+        reservation.quantity *
+        Math.ceil(
+          (new Date(reservation.endDate).getTime() -
+            new Date(reservation.startDate).getTime()) /
+            (1000 * 3600 * 24)
+        )
+    );
+    const totalPrice = totalOfReservations.reduce((a, b) => {
+      return a + b;
+    }, 0);
     //on crée une commande avec data + les infos du cart contenu dans le context
     //on sauvegarde la commande en DB tout en faisant la liaison avec le user
     const saveOrder = await datasource.getRepository(Order).save({
@@ -32,6 +45,7 @@ export class OrdersResolver {
       reservations: cartToDelete.reservations,
       statusDelivery: "Expected",
       user: { id: context.user.id },
+      totalPrice: totalPrice,
     });
 
     //Après payement (donc de création d'une commande) on vide le panier de ses reservations
@@ -48,18 +62,16 @@ export class OrdersResolver {
           });
         // On assigne cart à null et on relie la reservation au nouveau order
         if (updateReservation) {
-          await datasource
-            .getRepository(Reservation)
-            .save({
-              ...updateReservation,
-              cart: null,
-              order: { id: saveOrder.id },
-            });
+          await datasource.getRepository(Reservation).save({
+            ...updateReservation,
+            cart: null,
+            order: { id: saveOrder.id },
+          });
         }
       }
 
       // On modifie la date du lastTimeModified pour le panier
-      
+
       let cartToDelete2 = await datasource.getRepository(Cart).findOne({
         where: { id: context.user.cart.id },
         relations: ["reservations", "reservations.product"],

@@ -4,6 +4,7 @@
   "description": " ",
   "main": "index.js",
   "scripts": {
+    "devOscar": "docker compose -f docker-compose.win.oscar.yml up --build",
     "test": "jest",
     "test:ci": "yarn test ./src/",
     "test:docker": "docker compose -f docker-compose.test.yml up --build",

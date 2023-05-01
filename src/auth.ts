@@ -31,9 +31,11 @@ export const authChecker: AuthChecker<IContext> = async (
         "cart",
         "cart.reservations",
         "cart.reservations.product",
+        "cart.reservations.product.category",
         "orders",
         "orders.reservations",
         "orders.reservations.product",
+        "orders.reservations.product.category",
       ],
     });
 

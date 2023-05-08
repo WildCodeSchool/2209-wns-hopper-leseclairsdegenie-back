@@ -95,4 +95,24 @@ export class ProductsResolver {
       return null;
     }
   }
+
+  @Query(() => [Product])
+  async productsRandom(): Promise<Product[]> {
+    const listProducts = await datasource
+      .getRepository(Product)
+      .find({ relations: { category: true } });
+    const max = listProducts.length > 5 ? 5 : listProducts.length;
+
+    let listRandom: Product[] = [];
+
+    for (let i = 0; i < max; i++) {
+      let j = Math.floor(Math.random() * listProducts.length);
+      if (!listRandom?.includes(listProducts[j])) {
+        listRandom.push(listProducts[j]);
+      } else {
+        i--;
+      }
+    }
+    return listRandom;
+  }
 }

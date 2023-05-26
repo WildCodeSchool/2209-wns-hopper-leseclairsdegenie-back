@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  api:
+    # image: api
+    build: ./
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/app/src
+    environment:
+      - DB_HOST=db
+    command: npm run startWin
+  db:
+    image: postgres
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: supersecret
+    #volumes:
+    #  - /var/lib/postgresql/data

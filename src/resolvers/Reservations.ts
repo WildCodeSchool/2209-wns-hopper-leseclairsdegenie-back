@@ -69,20 +69,39 @@ export class ReservationsResolver {
   @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
-
       .getRepository(Reservation)
       .find({ relations: ["product", "cart", "product.category", "order"] });
   }
 
+  @Authorized()
   @Mutation(() => Reservation)
   async deleteReservation(
-    @Arg("Id", () => ID) id: number
+    @Arg("Id", () => ID) id: number,
+    @Ctx() context: IContext
   ): Promise<Reservation> {
     let reservation = await datasource
       .getRepository(Reservation)
       .findOne({ where: { id } });
 
-    if (reservation) {
+    let cart = await datasource
+      .getRepository(Cart)
+      .findOne({
+        where: { id: context.user.cart.id },
+        relations: ["reservations"],
+      });
+
+    console.log(cart);
+
+    if (reservation && cart) {
+      let allReservations = cart.reservations.map((item) => {
+        if (item.id !== id) {
+          return item;
+        }
+      });
+      await datasource.getRepository(Cart).save({
+        ...cart,
+        reservations: allReservations,
+      });
       await datasource.getRepository(Reservation).remove(reservation);
       return { ...reservation, id };
     } else {

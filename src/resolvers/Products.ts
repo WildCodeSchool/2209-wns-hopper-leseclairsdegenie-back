@@ -29,7 +29,7 @@ export class ProductsResolver {
   async products(): Promise<Product[]> {
     return await datasource
       .getRepository(Product)
-      .find({ relations: { category: true } });
+      .find({ relations: ["category"] });
   }
 
   @Mutation(() => Product)
@@ -56,25 +56,65 @@ export class ProductsResolver {
   @Mutation(() => Product)
   async updateProduct(
     @Arg("Id", () => ID) id: number,
-    @Arg("newQuantity", () => Number) newQuantity: number
+    @Arg("quantityReserved", () => Number, { nullable: true })
+    quantityReserved: number,
+    @Arg("newPrice", () => Number, { nullable: true }) newPrice: number,
+    @Arg("newQuantity", () => Number, { nullable: true }) newQuantity: number
   ): Promise<Product> {
     let product = await datasource
       .getRepository(Product)
       .findOne({ where: { id } });
-
     let newDisponibility = product.disponibility;
-    if (product.quantity - newQuantity === 0) {
-      newDisponibility = false;
+    let quantityUpdate = product.quantity;
+
+    // Mettre à jour la quantité après un arrivage de nouvelle marchandise
+    if (newQuantity) {
+      if (quantityUpdate) {
+        quantityUpdate += newQuantity;
+      } else {
+        quantityUpdate = newQuantity;
+      }
+    }
+
+    // mettre à jour les quantité après uen réservation
+    if (quantityReserved) {
+      if (product.quantity - quantityReserved <= 0) {
+        quantityUpdate = 0;
+        newDisponibility = false;
+      } else {
+        quantityUpdate = product.quantity - quantityReserved;
+      }
     }
 
     if (product) {
       return await datasource.getRepository(Product).save({
         ...product,
-        quantity: newQuantity,
+        quantity: quantityUpdate,
         disponibility: newDisponibility,
+        price: newPrice ? newPrice : product.price,
       });
     } else {
       return null;
     }
+  }
+
+  @Query(() => [Product])
+  async productsRandom(): Promise<Product[]> {
+    const listProducts = await datasource
+      .getRepository(Product)
+      .find({ relations: { category: true } });
+    const max = listProducts.length > 5 ? 5 : listProducts.length;
+
+    let listRandom: Product[] = [];
+
+    for (let i = 0; i < max; i++) {
+      let j = Math.floor(Math.random() * listProducts.length);
+      if (!listRandom?.includes(listProducts[j])) {
+        listRandom.push(listProducts[j]);
+      } else {
+        i--;
+      }
+    }
+    return listRandom;
   }
 }

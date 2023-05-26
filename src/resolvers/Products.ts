@@ -1,8 +1,9 @@
-import {Resolver, Mutation, Arg, Query, ID} from "type-graphql";
+import {Resolver, Mutation, Arg, Query, ID, FieldResolver} from "type-graphql";
 import {Product, ProductInput} from "../entities/Product";
 import datasource from "../utils";
 import {hash} from "argon2";
 import {Category} from "../entities/Category";
+
 
 @Resolver()
 export class ProductsResolver {

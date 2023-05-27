@@ -21,18 +21,35 @@ export class ReservationsResolver {
   async createReservation(
     @Arg("data", () => ReservationInput) data: ReservationInput,
     @Ctx() context: IContext
-  ): Promise<Reservation> {
+  ): Promise<Reservation | Number> {
     try {
+      // calcul du prix total de la réservation
       const debut = new Date(data.startDate).getTime();
       const fin = new Date(data.endDate).getTime();
       const nbJour = (fin - debut) / (1000 * 60 * 60 * 24);
-
       const productReservation = await datasource
         .getRepository(Product)
         .findOne({ where: { id: data.productId } });
-
       const priceReservation =
         productReservation.price * data.quantity * nbJour;
+
+      let cartId: number;
+      // l'utilisateur est-il connecté ?
+      if (context.user) {
+        // si oui, a-t-il déjà un panier (cart) qui lui est rattaché ?
+        if (context.user.cart) {
+          cartId = context.user.cart.id;
+        } else {
+          const newCart = datasource.getRepository(Cart).create();
+          datasource.getRepository(Cart).save(newCart);
+          cartId = newCart.id;
+        }
+      } else {
+        const newCart = datasource.getRepository(Cart).create();
+        datasource.getRepository(Cart).save(newCart);
+        const cartId = newCart.id;
+        return cartId;
+      }
 
       const reservationCreated = await datasource
         .getRepository(Reservation)
@@ -40,7 +57,7 @@ export class ReservationsResolver {
           ...data,
           price: priceReservation,
           nbJours: nbJour,
-          cart: { id: context.user.cart.id },
+          cart: { id: cartId },
           product: { id: data.productId },
         });
 

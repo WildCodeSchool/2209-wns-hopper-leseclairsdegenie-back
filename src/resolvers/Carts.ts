@@ -34,6 +34,11 @@ export class CartsResolver {
       ],
     });
   }
+  @Mutation(()=> Cart)
+  async createCart(): Promise<Cart> {
+    const cart = datasource.getRepository(Cart).create();
+    return await datasource.getRepository(Cart).save(cart);
+  }
 
   @Mutation(() => Cart)
   async deleteCart(@Arg("Id", () => ID) id: number): Promise<Cart> {

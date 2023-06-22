@@ -29,25 +29,18 @@ export class UsersResolver {
         const token = sign({ userId: newUser.id }, "supersecret!", {
           expiresIn: 3600,
         });
-
-        // const dataCart: CartInput = {
-        //   billingfirstname: data.firstname,
-        //   billingLastname: data.lastname,
-        //   billingAdress: data.deliveryAdress,
-        //   deliveryfirstname: data.firstname,
-        //   deliveryLastname: data.lastname,
-        //   deliveryAdress: data.deliveryAdress,
-        //   lastTimeModified: new Date(),
-        // };
-        if (data.cartId) {
-          const cart = datasource.getRepository(Cart).findOne({
-            where: { id: data.cartId }
-          });
-          await datasource.getRepository(Cart).save({
-            ...cart,
-            user: { id: newUser.id },
-          });
+        if (token) {
+          if (data.cartId) {
+            const cart = datasource.getRepository(Cart).findOne({
+              where: { id: data.cartId }
+            });
+            await datasource.getRepository(Cart).save({
+              ...cart,
+              user: { id: newUser.id },
+            });
+          }
         }
+
         return token;
       } else {
         return null;
@@ -76,15 +69,17 @@ export class UsersResolver {
         const token = sign({ userId: user.id }, "supersecret!", {
           expiresIn: 3600,
         });
-        if (cartId) {
-          const cart = datasource.getRepository(Cart).findOne({
-            where: { id: cartId }
-          });
-          await datasource.getRepository(Cart).save({
-            ...cart,
-            user: { id: user.id },
-          });
-        }
+        if (token) {
+          if (cartId) {
+            const cart = datasource.getRepository(Cart).findOne({
+              where: { id: cartId }
+            });
+            await datasource.getRepository(Cart).save({
+              ...cart,
+              user: { id: user.id },
+            });
+          }
+        }     
         return token;
       } else {
         return "verify problem";

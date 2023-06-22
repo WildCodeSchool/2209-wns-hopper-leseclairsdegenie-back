@@ -83,7 +83,7 @@ export class Dev {
         description:
           "Partez à l'aventure où vous le souhaitez avec ce vtt électrique",
         disponibility: true,
-        quantity: 50,
+        quantity: 5,
         image:
           "https://cdn.pixabay.com/photo/2020/09/13/09/50/mountain-bike-5567847_960_720.jpg",
         price: 35.0,

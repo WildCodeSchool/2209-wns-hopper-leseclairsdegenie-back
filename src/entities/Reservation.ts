@@ -61,7 +61,4 @@ export class ReservationInput {
 
   @Field({ nullable: true })
   endDate: Date;
-
-  @Field({ nullable: true })
-  taxes: number;
 }

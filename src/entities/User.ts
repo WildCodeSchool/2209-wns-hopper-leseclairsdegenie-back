@@ -10,6 +10,7 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsEmail, Length } from "class-validator";
 import { Cart } from "./Cart";
 import { Order } from "./Order";
+import { TokenNotificationPush } from "./TokenNotificationPush";
 
 @Entity()
 @ObjectType()
@@ -50,6 +51,10 @@ export class User {
   @Field(() => [Order], { nullable: true })
   @OneToMany(() => Order, "user", { nullable: true })
   orders: Order[];
+
+  @Field(() => [TokenNotificationPush], { nullable: true })
+  @OneToMany(() => TokenNotificationPush, "user", { nullable: true })
+  tokenNotificationPushList: TokenNotificationPush[];
 }
 
 @InputType()

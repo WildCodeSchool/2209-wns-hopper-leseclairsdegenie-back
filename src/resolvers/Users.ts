@@ -13,7 +13,7 @@ import { hash, verify } from "argon2";
 import { sign } from "jsonwebtoken";
 import { IContext } from "../auth";
 import { Cart, CartInput } from "../entities/Cart";
-import { TokenNotificationPush } from "../entities/TokenNotificationPush";
+import { NotificationPush } from "../entities/NotificationPush";
 import { In } from "typeorm";
 
 @Resolver()

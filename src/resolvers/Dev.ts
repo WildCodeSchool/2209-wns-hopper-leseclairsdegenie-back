@@ -5,7 +5,7 @@ import datasource from "../utils";
 import { User, UserInput } from "../entities/User";
 import { Cart, CartInput } from "../entities/Cart";
 import axios from "axios";
-import { TokenNotificationPush } from "../entities/TokenNotificationPush";
+import { NotificationPush } from "../entities/NotificationPush";
 import { Any } from "typeorm";
 
 @Resolver()
@@ -213,13 +213,13 @@ export class Dev {
   }
 
   @Mutation(() => Boolean)
-  async sendNotification(): Promise<boolean> {
+  async sendNotificationTestAllUsers(): Promise<boolean> {
     // send push notifications
     // const users = await datasource.getRepository(User).find();
     // const pushTokens = users.map(user => user.pushToken);
     const reponses = [];
     const pushTokens = await datasource
-      .getRepository(TokenNotificationPush)
+      .getRepository(NotificationPush)
       .find({ relations: ["user"] });
     for (const token in pushTokens) {
       if (pushTokens[token].user) {

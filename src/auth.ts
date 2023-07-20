@@ -23,6 +23,7 @@ export const authChecker: AuthChecker<IContext> = async (
       "supersecret!"
     ) as any;
     const userId = decodedToken.userId;
+    console.log(decodedToken);
 
     // return true → stateless version!
     const user = await datasource.getRepository(User).findOne({

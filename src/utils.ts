@@ -5,7 +5,7 @@ import { Reservation } from "./entities/Reservation";
 import { Product } from "./entities/Product";
 import { Category } from "./entities/Category";
 import { Order } from "./entities/Order";
-import { TokenNotificationPush } from "./entities/TokenNotificationPush";
+import { NotificationPush } from "./entities/NotificationPush";
 
 const datasource = new DataSource({
   type: "postgres",
@@ -22,7 +22,7 @@ const datasource = new DataSource({
     Product,
     Category,
     Order,
-    TokenNotificationPush,
+    NotificationPush,
   ],
   logging: ["query", "error"],
 });

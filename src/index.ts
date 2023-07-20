@@ -9,7 +9,7 @@ import { ProductsResolver } from "./resolvers/Products";
 import { ReservationsResolver } from "./resolvers/Reservations";
 import { CategoryResolver } from "./resolvers/Category";
 import { OrdersResolver } from "./resolvers/Order";
-import { TokenNotificationPushListResolver } from "./resolvers/TokenNotificationPushList";
+import { NotificationPushResolver } from "./resolvers/NotificationPush";
 import { Dev } from "./resolvers/Dev";
 
 // just a test to triger CI
@@ -26,7 +26,7 @@ async function bootstrap(): Promise<void> {
       CategoryResolver,
       OrdersResolver,
       Dev,
-      TokenNotificationPushListResolver,
+      NotificationPushResolver,
     ],
     validate: {
       forbidUnknownValues: false,

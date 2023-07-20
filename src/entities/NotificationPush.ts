@@ -10,16 +10,27 @@ import { User } from "./User";
 
 @Entity()
 @ObjectType()
-export class TokenNotificationPush {
+export class NotificationPush {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
 
   @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, "tokenNotificationPushList", { onDelete: "CASCADE" })
+  @ManyToOne(() => User, "notificationPush", { onDelete: "CASCADE" })
   user: User;
 
   @Column()
   @Field(() => String)
   token: string;
+}
+
+
+@InputType()
+export class DataNotificationInput {
+  @Field()
+  notificationId: string;
+
+  @Field()
+  type: string;
+
 }

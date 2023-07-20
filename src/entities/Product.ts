@@ -2,7 +2,9 @@ import {Field, FieldResolver, ID, InputType, Int, ObjectType, Root} from "type-g
 import {
     Column,
     Entity,
+    IsNull,
     ManyToOne,
+    Not,
     OneToMany,
     PrimaryGeneratedColumn,
 } from "typeorm";
@@ -11,6 +13,8 @@ import {Reservation} from "./Reservation";
 import datasource from "../utils";
 import {LessThanOrEqual, MoreThanOrEqual} from "typeorm";
 import {Arg} from "type-graphql";
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { now } from "moment-timezone";
 
 @Entity()
 @ObjectType()
@@ -54,14 +58,16 @@ export class Product {
     @Field(() => [ProductAvailability])
     async availability(
         @Root() currentProduct: Product,
-        @Arg("startDate", () => Date) startDate: Date,
-        @Arg("endDate", () => Date) endDate: Date,
+        @Arg("month", () => Number) month: number,
     ): Promise<ProductAvailability[]> {
         const availableDates: ProductAvailability[] = [];
         const product = await datasource
             .getRepository(Product)
             .findOne({where: {id: currentProduct.id}, relations: {category: true}});
-        const lastDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+        console.log(month);
+        const timezoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const startDate = new Date(new Date().getFullYear(), month, 1);
+        const lastDate = new Date(new Date().getFullYear(), month+1, 0);
         for (let date = new Date(startDate); date <= lastDate; date.setDate(date.getDate() + 1)) {
             let availableQuantity = product.quantity;
             const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
@@ -74,19 +80,10 @@ export class Product {
                             where: [
                                 {
                                     product: {id: product.id},
-                                    startDate: LessThanOrEqual(startOfDate),
-                                    endDate: MoreThanOrEqual(startOfDate)
+                                    startDate: LessThanOrEqual(zonedTimeToUtc(startOfDate, timezoneName)),
+                                    endDate: MoreThanOrEqual(zonedTimeToUtc(endOfDate, timezoneName)),
+                                    order: {id: Not(IsNull()) }
                                 },
-                                {
-                                    product: {id: product.id},
-                                    startDate: MoreThanOrEqual(startOfDate),
-                                    endDate: MoreThanOrEqual(endOfDate)
-                                },
-                                {
-                                    product: {id: product.id},
-                                    startDate: LessThanOrEqual(startOfDate),
-                                    endDate: MoreThanOrEqual(endOfDate)
-                                }
                             ]
                         })
                 );
@@ -95,6 +92,7 @@ export class Product {
             }
             availableDates.push({date: new Date(date), quantity: availableQuantity});
         }
+        // console.log("dates dispo ici", availableDates);
         return availableDates;
     }
 }

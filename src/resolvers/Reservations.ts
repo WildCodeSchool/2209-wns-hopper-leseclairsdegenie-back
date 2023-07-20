@@ -14,19 +14,6 @@ import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
 import { Order } from "../entities/Order";
 
-interface IReservation {
-  id: number;
-  product: Product;
-  cart: Cart;
-  order?: Order;
-  startDate: Date;
-  endDate: Date;
-  quantity: number;
-  price: number;
-  taxes?: number | null;
-  nbJours: number;
-}
-
 @Resolver()
 export class ReservationsResolver {
   @Mutation(() => Reservation)
@@ -58,6 +45,8 @@ export class ReservationsResolver {
             { ...newCart, user: { id: context.user.id } });
           cartId = (await savedCart).id;
         }
+      } else if (data.cartId) {
+        cartId = data.cartId;
       } else {
         const newCart = datasource.getRepository(Cart).create();
         const savedCart = datasource.getRepository(Cart).save(newCart);
@@ -103,10 +92,25 @@ export class ReservationsResolver {
   }
 
   @Query(() => [Reservation])
+  async reservationsByCart(
+    @Arg("cartId", () => ID) cartId: number
+  ): Promise<Reservation[]> {
+    const cart = await datasource.getRepository(Cart).findOne({
+      where: { id: cartId }
+    });
+    console.log(cartId);
+    return await datasource
+      .getRepository(Reservation)
+      .find({ 
+        where: {cart: {id: cart.id}},
+        relations: ["product", "cart", "product.category"] });
+  }
+
+  @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
       .getRepository(Reservation)
-      .find({ relations: ["product", "cart", "product.category", "order"] });
+      .find({ relations: ["product", "cart", "product.category"] });
   }
 
   @Authorized()
@@ -176,22 +180,24 @@ export class ReservationsResolver {
     @Arg("Id", () => ID) id: number,
     @Ctx() context: IContext
   ): Promise<boolean> {
-    const currentCart = context.user.cart;
+    // mettre l'id du cart en entrée
+    // const currentCart = context.user.cart;
     let cart = await datasource.getRepository(Cart).findOne({
-      where: { id: currentCart.id },
+      where: { id: id },
     });
+    // juste laisser if cart
     if (
-      cart &&
-      Number(currentCart.id) === Number(id) &&
-      Number(id) === Number(cart.id)
+      cart
+      // Number(currentCart.id) === Number(id) &&
+      // Number(id) === Number(cart.id)
     ) {
       const verifyProduct = () => {
-        if (currentCart.reservations.length === 0) {
+        if (cart.reservations.length === 0) {
           return false;
         }
-        if (currentCart.reservations.length >= 1) {
+        if (cart.reservations.length >= 1) {
           console.log("-----------------------");
-          const productVerified = currentCart.reservations.filter(
+          const productVerified = cart.reservations.filter(
             (reservation) => reservation.product.disponibility === false
           );
           console.log(productVerified);
@@ -212,6 +218,7 @@ export class ReservationsResolver {
       return false;
     }
   }
+
   @Mutation(() => Reservation)
   async updateQuantityReservation(
     @Arg("newQuantity", () => Number) newQuantity: number,

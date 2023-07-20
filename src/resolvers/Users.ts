@@ -52,27 +52,28 @@ export class UsersResolver {
 
   @Mutation(() => String, { nullable: true })
   async signin(
-    @Arg("email") email: string,
-    @Arg("password") password: string,
-    @Arg("cartId") cartId: number
+    @Arg("data", () => UserInput) data: UserInput
+    // @Arg("email") email: string,
+    // @Arg("password") password: string,
+    // @Arg("cartId",{ nullable: true }) cartId?: number
   ): Promise<string | null> {
     try {
       const user = await datasource
         .getRepository(User)
-        .findOne({ where: { email } });
+        .findOne({ where: { email: data.email } });
 
       if (!user) {
         return "user not found";
       }
 
-      if (await verify(user.password, password)) {
+      if (await verify(user.password, data.password)) {
         const token = sign({ userId: user.id }, "supersecret!", {
           expiresIn: 3600,
         });
         if (token) {
-          if (cartId) {
+          if (data.cartId) {
             const cart = datasource.getRepository(Cart).findOne({
-              where: { id: cartId }
+              where: { id: data.cartId }
             });
             await datasource.getRepository(Cart).save({
               ...cart,

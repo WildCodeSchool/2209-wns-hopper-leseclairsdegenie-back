@@ -71,6 +71,6 @@ export class UserInput {
   @Field({ nullable: true })
   deliveryAdress: string;
 
-  @Field({nullable: true})
+  @Field(() => ID, {nullable: true})
   cartId: number;
 }

@@ -13,6 +13,10 @@ export class Category {
   @Field()
   name: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  image: string;
+
   @Field(() => [Product], { nullable: true })
   @OneToMany(() => Product, "category")
   products: Product[];
@@ -21,4 +25,7 @@ export class Category {
 export class CategoryInput {
   @Field()
   name: string;
+
+  @Field({ nullable: true })
+  image: string;
 }

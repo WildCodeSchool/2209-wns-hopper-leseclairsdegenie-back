@@ -1,21 +1,23 @@
 import "reflect-metadata";
 import {ApolloServer} from "apollo-server";
 import datasource from "./utils";
-import {buildSchema} from "type-graphql";
-import {UsersResolver} from "./resolvers/Users";
-import {authChecker} from "./auth";
-import {CartsResolver} from "./resolvers/Carts";
-import {ProductsResolver} from "./resolvers/Products";
-import {ReservationsResolver} from "./resolvers/Reservations";
-import {CategoryResolver} from "./resolvers/Category";
-import {OrdersResolver} from "./resolvers/Order";
-import {Dev} from "./resolvers/Dev";
-import {PaymentResolver} from "./resolvers/Payment";
+import { buildSchema } from "type-graphql";
+import { UsersResolver } from "./resolvers/Users";
+import { authChecker } from "./auth";
+import { CartsResolver } from "./resolvers/Carts";
+import { ProductsResolver } from "./resolvers/Products";
+import { ReservationsResolver } from "./resolvers/Reservations";
+import { CategoryResolver } from "./resolvers/Category";
+import { OrdersResolver } from "./resolvers/Order";
+import { NotificationPushResolver } from "./resolvers/NotificationPush";
+import { Dev } from "./resolvers/Dev";
+import { PaymentResolver } from "./resolvers/Payment";
 
 // just a test to triger CI
 const PORT = 5000;
 
 async function bootstrap(): Promise<void> {
+
     // ... Building schema here
     const schema = await buildSchema({
         resolvers: [
@@ -26,7 +28,8 @@ async function bootstrap(): Promise<void> {
             CategoryResolver,
             OrdersResolver,
             Dev,
-            PaymentResolver
+            PaymentResolver,
+            NotificationPushResolver
         ],
         validate: {
             forbidUnknownValues: false,

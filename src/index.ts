@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ApolloServer } from "apollo-server";
+import {ApolloServer} from "apollo-server";
 import datasource from "./utils";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/Users";
@@ -11,57 +11,60 @@ import { CategoryResolver } from "./resolvers/Category";
 import { OrdersResolver } from "./resolvers/Order";
 import { NotificationPushResolver } from "./resolvers/NotificationPush";
 import { Dev } from "./resolvers/Dev";
+import { PaymentResolver } from "./resolvers/Payment";
 
 // just a test to triger CI
 const PORT = 5000;
 
 async function bootstrap(): Promise<void> {
-  // ... Building schema here
-  const schema = await buildSchema({
-    resolvers: [
-      UsersResolver,
-      CartsResolver,
-      ProductsResolver,
-      ReservationsResolver,
-      CategoryResolver,
-      OrdersResolver,
-      Dev,
-      NotificationPushResolver,
-    ],
-    validate: {
-      forbidUnknownValues: false,
-    },
-    authChecker,
-  });
 
-  // Create the GraphQL server and verify authorizarion
-  const server = new ApolloServer({
-    schema,
-    cors: true,
-    context: ({ req }) => {
-      // Get the user token from the headers.
-      const authorization: string = req?.headers?.authorization;
+    // ... Building schema here
+    const schema = await buildSchema({
+        resolvers: [
+            UsersResolver,
+            CartsResolver,
+            ProductsResolver,
+            ReservationsResolver,
+            CategoryResolver,
+            OrdersResolver,
+            Dev,
+            PaymentResolver,
+            NotificationPushResolver
+        ],
+        validate: {
+            forbidUnknownValues: false,
+        },
+        authChecker,
+    });
 
-      if (authorization) {
-        // Bearer ...jwt
-        const token = authorization.split(" ").pop();
-        return { token };
-      }
-      // Add the user to the context
-      return { token: null };
-    },
-  });
+    // Create the GraphQL server and verify authorizarion
+    const server = new ApolloServer({
+        schema,
+        cors: true,
+        context: ({req}) => {
+            // Get the user token from the headers.
+            const authorization: string = req?.headers?.authorization;
 
-  try {
-    await datasource.initialize();
-    console.log("Server started!");
-    // Start the server
-    const { url } = await server.listen(PORT);
-    console.log(`Server is running, GraphQL Playground available at ${url}`);
-  } catch (err) {
-    console.log("An error occured");
-    console.error(err);
-  }
+            if (authorization) {
+                // Bearer ...jwt
+                const token = authorization.split(" ").pop();
+                return {token};
+            }
+            // Add the user to the context
+            return {token: null};
+        },
+    });
+
+    try {
+        await datasource.initialize();
+        console.log("Server started!");
+        // Start the server
+        const {url} = await server.listen(PORT);
+        console.log(`Server is running, GraphQL Playground available at ${url}`);
+    } catch (err) {
+        console.log("An error occured");
+        console.error(err);
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

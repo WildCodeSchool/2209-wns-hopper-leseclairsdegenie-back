@@ -7,47 +7,69 @@ import {
   Ctx,
   Authorized,
 } from "type-graphql";
-import { getRepository } from "typeorm";
 import { IContext } from "../auth";
 import { Cart } from "../entities/Cart";
 import { Product } from "../entities/Product";
 import { Reservation, ReservationInput } from "../entities/Reservation";
 import datasource from "../utils";
+import { Order } from "../entities/Order";
 
 @Resolver()
 export class ReservationsResolver {
-  @Authorized()
   @Mutation(() => Reservation)
   async createReservation(
     @Arg("data", () => ReservationInput) data: ReservationInput,
     @Ctx() context: IContext
   ): Promise<Reservation> {
+    console.log("la réservation commence ici")
     try {
+      // calcul du prix total de la réservation
       const debut = new Date(data.startDate).getTime();
       const fin = new Date(data.endDate).getTime();
-      const nbJour = (fin - debut) / (1000 * 60 * 60 * 24);
-
+      const nbJour = Math.ceil((fin - debut) / (1000 * 60 * 60 * 24));
       const productReservation = await datasource
         .getRepository(Product)
         .findOne({ where: { id: data.productId } });
-
       const priceReservation =
         productReservation.price * data.quantity * nbJour;
 
+      let cartId: number;
+      // l'utilisateur est-il connecté ?
+      if (context.user) {
+        // si oui, a-t-il déjà un panier (cart) qui lui est rattaché ?
+        if (context.user.cart) {
+          cartId = context.user.cart.id;
+        } else {
+          const newCart = datasource.getRepository(Cart).create();
+          const savedCart = datasource.getRepository(Cart).save(
+            { ...newCart, user: { id: context.user.id } });
+          cartId = (await savedCart).id;
+        }
+      } else if (data.cartId) {
+        cartId = data.cartId;
+      } else {
+        const newCart = datasource.getRepository(Cart).create();
+        const savedCart = datasource.getRepository(Cart).save(newCart);
+        cartId = (await savedCart).id;
+      }
+
+      const cart = await datasource.getRepository(Cart).findOne({
+        where: { id: cartId },
+      });
       const reservationCreated = await datasource
         .getRepository(Reservation)
         .save({
           ...data,
           price: priceReservation,
           nbJours: nbJour,
-          cart: { id: context.user.cart.id },
-          product: { id: data.productId },
+          cart: { id: cartId },
+          product: { id: productReservation.id },
         });
 
       if (reservationCreated) {
         const updateDateCart = await datasource
           .getRepository(Cart)
-          .findOne({ where: { id: context.user.cart.id } });
+          .findOne({ where: { id: cartId } });
 
         const cartUpdated = await datasource
           .getRepository(Cart)
@@ -56,21 +78,39 @@ export class ReservationsResolver {
           "ajout d'une réservation dans le panier à : ",
           cartUpdated.lastTimeModified
         );
+        console.log(reservationCreated);
       }
+
       return await datasource.getRepository(Reservation).findOne({
         where: { id: reservationCreated.id },
         relations: ["product", "cart"],
       });
+
     } catch (error) {
       console.log(error);
     }
   }
 
   @Query(() => [Reservation])
+  async reservationsByCart(
+    @Arg("cartId", () => ID) cartId: number
+  ): Promise<Reservation[]> {
+    const cart = await datasource.getRepository(Cart).findOne({
+      where: { id: cartId }
+    });
+    console.log(cartId);
+    return await datasource
+      .getRepository(Reservation)
+      .find({ 
+        where: {cart: {id: cart.id}},
+        relations: ["product", "cart", "product.category"] });
+  }
+
+  @Query(() => [Reservation])
   async reservations(): Promise<Reservation[]> {
     return await datasource
       .getRepository(Reservation)
-      .find({ relations: ["product", "cart", "product.category", "order"] });
+      .find({ relations: ["product", "cart", "product.category"] });
   }
 
   @Authorized()
@@ -140,22 +180,24 @@ export class ReservationsResolver {
     @Arg("Id", () => ID) id: number,
     @Ctx() context: IContext
   ): Promise<boolean> {
-    const currentCart = context.user.cart;
+    // mettre l'id du cart en entrée
+    // const currentCart = context.user.cart;
     let cart = await datasource.getRepository(Cart).findOne({
-      where: { id: currentCart.id },
+      where: { id: id },
     });
+    // juste laisser if cart
     if (
-      cart &&
-      Number(currentCart.id) === Number(id) &&
-      Number(id) === Number(cart.id)
+      cart
+      // Number(currentCart.id) === Number(id) &&
+      // Number(id) === Number(cart.id)
     ) {
       const verifyProduct = () => {
-        if (currentCart.reservations.length === 0) {
+        if (cart.reservations.length === 0) {
           return false;
         }
-        if (currentCart.reservations.length >= 1) {
+        if (cart.reservations.length >= 1) {
           console.log("-----------------------");
-          const productVerified = currentCart.reservations.filter(
+          const productVerified = cart.reservations.filter(
             (reservation) => reservation.product.disponibility === false
           );
           console.log(productVerified);
@@ -176,6 +218,7 @@ export class ReservationsResolver {
       return false;
     }
   }
+
   @Mutation(() => Reservation)
   async updateQuantityReservation(
     @Arg("newQuantity", () => Number) newQuantity: number,

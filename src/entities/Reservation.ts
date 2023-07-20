@@ -53,6 +53,9 @@ export class ReservationInput {
   @Field(() => ID)
   productId: number;
 
+  @Field(() => ID, { nullable: true })
+  cartId: number;
+
   @Field()
   quantity: number;
 
@@ -61,7 +64,4 @@ export class ReservationInput {
 
   @Field({ nullable: true })
   endDate: Date;
-
-  @Field({ nullable: true })
-  taxes: number;
 }

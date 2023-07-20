@@ -45,6 +45,8 @@ export class ReservationsResolver {
             { ...newCart, user: { id: context.user.id } });
           cartId = (await savedCart).id;
         }
+      } else if (data.cartId) {
+        cartId = data.cartId;
       } else {
         const newCart = datasource.getRepository(Cart).create();
         const savedCart = datasource.getRepository(Cart).save(newCart);

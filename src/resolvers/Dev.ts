@@ -4,6 +4,10 @@ import { Product } from "../entities/Product";
 import datasource from "../utils";
 import { User, UserInput } from "../entities/User";
 import { Cart, CartInput } from "../entities/Cart";
+import axios from "axios";
+import { NotificationPush } from "../entities/NotificationPush";
+import { Any } from "typeorm";
+
 
 @Resolver()
 export class Dev {
@@ -76,7 +80,7 @@ export class Dev {
     const campCategory = datasource
       .getRepository(Category)
       .findOne({ where: { name: "Camping" } });
-      
+
     const products = [
       {
         category: await cyclesCategory,
@@ -84,7 +88,7 @@ export class Dev {
         description:
           "Partez à l'aventure où vous le souhaitez avec ce vtt électrique",
         disponibility: true,
-        quantity: 50,
+        quantity: 5,
         image:
           "https://cdn.pixabay.com/photo/2020/09/13/09/50/mountain-bike-5567847_960_720.jpg",
         price: 35.0,
@@ -207,6 +211,44 @@ export class Dev {
     }
 
     //...
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async sendNotificationTestAllUsers(): Promise<boolean> {
+    // send push notifications
+    // const users = await datasource.getRepository(User).find();
+    // const pushTokens = users.map(user => user.pushToken);
+    const reponses = [];
+    const pushTokens = await datasource
+      .getRepository(NotificationPush)
+      .find({ relations: ["user"] });
+    for (const token in pushTokens) {
+      if (pushTokens[token].user) {
+        console.log(pushTokens[token]);
+        const message = {
+          to: pushTokens[token].token,
+          sound: "default",
+          title: "New post!",
+          body: "Ovrez l'app, il y a du nouveaux",
+          data: { notificationId: "1234", type: "newProduct" },
+        };
+
+        const reponse = await axios("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+          data: JSON.stringify(message),
+        });
+        if (reponse) {
+          reponses.push(reponse);
+        }
+      }
+    }
+    console.log(reponses);
     return true;
   }
 }

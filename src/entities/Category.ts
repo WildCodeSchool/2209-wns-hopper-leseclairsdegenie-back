@@ -25,6 +25,7 @@ export class Category {
 export class CategoryInput {
   @Field()
   name: string;
+  
   @Field({ nullable: true })
   image: string;
 }

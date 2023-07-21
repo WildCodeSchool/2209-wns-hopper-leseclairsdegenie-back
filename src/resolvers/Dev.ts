@@ -8,6 +8,7 @@ import axios from "axios";
 import { NotificationPush } from "../entities/NotificationPush";
 import { Any } from "typeorm";
 
+
 @Resolver()
 export class Dev {
   @Mutation(() => Boolean)
@@ -79,6 +80,7 @@ export class Dev {
     const campCategory = datasource
       .getRepository(Category)
       .findOne({ where: { name: "Camping" } });
+
     const products = [
       {
         category: await cyclesCategory,
